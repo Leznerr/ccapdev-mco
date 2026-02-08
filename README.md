@@ -17,7 +17,7 @@ PHASE 1
 │     ├── home.js           <-- [Bea] Home page logic (Render Labs + Search)
 │     └── view-lab.js         <-- [Renzel] Seat generation & selection logic
 │
-├── admin-dashboard.html      <-- [Bea] Technician View
+├── admin-dashboard.html      <-- [Abigail] Technician View
 ├── index.html                <-- [Bea] Home Page
 ├── login.html                <-- [Gab] Sign-in Form
 ├── profile.html              <-- [Renzel] User Dashboard
