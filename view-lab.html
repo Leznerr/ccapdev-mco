@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Lab - AnimoLabs</title>
+    
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/view-lab.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Shared Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span>AnimoLabs</span>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="profile.html" class="nav-link">Profile</a></li>
+                <li><a href="view-lab.html" class="nav-link active">Reserve a Lab</a></li>
+            </ul>
+
+            <div class="nav-user-area">
+                
+                <a href="login.html" id="btn-login-nav" class="btn-login-nav" style="display: none;">
+                    Login
+                </a>
+
+                <div class="menu-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main booking layout -->
+    <main class="view-lab-container">
+        
+        <aside class="lab-sidebar"> <!-- Controls panel -->
+            
+            <div class="control-card">
+                <div class="form-group">
+                    <label class="card-label">1. Select Building</label>
+                    <div class="custom-select-wrapper">
+                        <select id="building-selector" class="main-dropdown">
+                            <option value="" disabled selected>Choose a Building...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="lab-group" style="display:none;">
+                    <label class="card-label">2. Select Lab Room</label>
+                    <div class="custom-select-wrapper">
+                        <select id="lab-selector" class="main-dropdown">
+                            <option value="" disabled selected>Choose a Lab...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="lab-info-box" class="lab-info" style="display:none;">
+                    <hr class="divider">
+                    <div class="info-row">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>LOCATION</strong>
+                            <span id="lab-location">...</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-chair"></i>
+                        <div>
+                            <strong>CAPACITY</strong>
+                            <span id="lab-capacity">...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-card" id="date-time-card" style="opacity: 0.5; pointer-events: none;">
+                <label class="card-label">3. Select Date & Time</label>
+                
+                <div class="input-group">
+                    <i class="far fa-calendar-alt"></i>
+                    <input type="date" id="date-selector">
+                </div>
+
+                <div class="input-group">
+                    <i class="far fa-clock"></i>
+                    <select id="time-selector">
+                        <option value="09:00 - 09:30">09:00 AM - 09:30 AM</option>
+                        <option value="09:30 - 10:00">09:30 AM - 10:00 AM</option>
+                        <option value="10:00 - 10:30">10:00 AM - 10:30 AM</option>
+                        <option value="10:30 - 11:00">10:30 AM - 11:00 AM</option>
+                        <option value="11:00 - 11:30">11:00 AM - 11:30 AM</option>
+                        <option value="11:30 - 12:00">11:30 AM - 12:00 PM</option>
+                        <option value="13:00 - 13:30">01:00 PM - 01:30 PM</option>
+                        <option value="13:30 - 14:00">01:30 PM - 02:00 PM</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-card highlight-card">
+                <label class="card-label">Booking Summary</label>
+                
+                <div id="selected-seat-display" class="seat-badge">
+                    Select a Seat
+                </div>
+
+                <div id="tech-context" style="display: none; background: #fff3cd; color: #856404; padding: 10px; border: 1px solid #ffeeba; border-radius: 6px; margin-bottom: 15px; font-size: 0.9rem;">
+                    <i class="fas fa-user-check"></i> 
+                    Reserving for: <span id="walkin-display-name" style="font-weight: bold; text-decoration: underline;">Loading...</span>
+                </div>
+
+                <div class="checkbox-group" id="student-controls">
+                    <input type="checkbox" id="anon-check">
+                    <label for="anon-check">Reserve Anonymously</label>
+                </div>
+
+                <button id="btn-reserve" class="btn-reserve" disabled>
+                    Reserve Seat
+                </button>
+            </div>
+
+        </aside>
+
+        <section class="map-area">
+            <header class="map-header">
+                <h2 id="map-title">Room Layout</h2>
+                
+                <div class="legend">
+                    <div class="legend-item"><span class="box available"></span> Available</div>
+                    <div class="legend-item"><span class="box occupied"></span> Occupied</div>
+                    <div class="legend-item"><span class="box selected"></span> Selected</div>
+                </div>
+            </header>
+
+            <div id="map-placeholder" class="map-placeholder">
+                <div class="placeholder-content">
+                    <i class="fas fa-building" style="font-size: 4rem; color: #cbd5e0; margin-bottom: 20px;"></i>
+                    <h3>Please Select a Building & Lab</h3>
+                    <p>Choose a location from the sidebar to view the seat map.</p>
+                </div>
+            </div>
+
+            <div id="map-wrapper" class="map-wrapper" style="display: none;">
+                <div id="seat-grid" class="seat-grid">
+                    </div>
+                
+                <div class="front-room-indicator">
+                    FRONT OF ROOM
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="success-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content success-content">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h2>Booking Confirmed!</h2>
+            <p>Your reservation has been successfully recorded.</p>
+            
+            <button id="btn-finish" class="btn-primary-full">Done</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/view-lab.js"></script>
+</body>
+</html>
