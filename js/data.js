@@ -130,5 +130,20 @@ const reservations = [
     }
 ];
 
-// Simulated login (palit role to test)
-let currentUser = users.find(user => user.role === "Student");
+// Simulated session (just change the role to Student instead of Technician to switch modes):
+// 1) use saved username/role if available
+// 2) fallback to a student account for default demo flow
+let currentUser = null;
+
+if (typeof sessionStorage !== "undefined") {
+    const savedUsername = sessionStorage.getItem("currentUsername");
+    const savedRole = sessionStorage.getItem("currentRole");
+
+    currentUser =
+        users.find(user => user.username === savedUsername) ||
+        users.find(user => user.role === savedRole);
+}
+
+if (!currentUser) {
+    currentUser = users.find(user => user.role === "Technician");
+}
