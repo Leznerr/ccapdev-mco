@@ -145,5 +145,5 @@ if (typeof sessionStorage !== "undefined") {
 }
 
 if (!currentUser) {
-    currentUser = users.find(user => user.role === "Technician");
+    currentUser = users.find(user => user.role === "Student");
 }

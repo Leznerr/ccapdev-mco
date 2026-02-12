@@ -277,7 +277,7 @@ body {
     opacity: 0;
     transition: opacity 0.3s;
     font-size: 0.75rem;
-    pointer-events: none;
+    pointer-events: auto;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
@@ -299,9 +299,20 @@ body {
     border-color: #2d3436 transparent transparent transparent;
 }
 
-.seat:hover .tooltip-text {
+.seat:hover .tooltip-text,
+.seat .tooltip-text:hover {
     visibility: visible;
     opacity: 1;
+}
+
+.seat .tooltip-user-link {
+    color: #fff;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.seat .tooltip-user-link:hover {
+    color: #ffe8e8;
 }
 
 /* Color variations */
