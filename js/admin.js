@@ -1,10 +1,10 @@
 
   const labCapacityData = {
-    'GK-304B': 30,
-    'GK-404A': 30,
-    'AG-1904': 40,
-    'AG-702': 40,
-    'VL-201': 20
+    'GK-304B': 40,
+    'GK-404A': 45,
+    'AG-1904': 35,
+    'AG-702': 30,
+    'VL-201': 30
   };
 
   // forsubmission of lab form
