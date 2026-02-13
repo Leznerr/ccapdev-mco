@@ -1,0 +1,124 @@
+/* file: css/auth.css */
+
+/* --- 1. VARIABLES & BASE --- */
+/* (from common.css) */
+:root {
+    --dlsu-green: #387C44;  --dlsu-accent: #4CD137;
+    --white: #fff;          --dark: #2d3436;
+    --bg-color: #f0f2f5;    --light-grey: #D9D9D9;
+    --dark-grey: #969090;
+}
+
+body {
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-image: url("../assets/authbg.png");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    color: #495057; 
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   1. LAYOUT
+   ========================================= */
+.container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+}       
+
+.auth-form {
+    width: 400px;
+    background-color: var(--light-grey);
+    padding: 100px 60px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+}
+
+.left-container .auth-form {
+    left: 200px;
+}
+
+.right-container .auth-form {
+    right: 200px;
+}
+
+/* =========================================
+   2. AUTH FORM ELEMENTS
+   ========================================= */
+
+.auth-form h1 {
+    align-self: center;
+    margin-bottom: 20px;
+    color: var(--dark);
+    place-self: center;
+}
+
+.auth-form hr {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border: none;
+    border-top: 1px solid var(--dark-grey);
+}
+
+.auth-form p {
+    align-self: center;
+    margin-top: 20px;
+    color: var(--dark);
+    place-self: center;
+}
+
+/* =========================================
+   3. INPUTS
+   ========================================= */
+/* base input styling */
+input{
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    background-position: 10px 10px; 
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+}
+
+.input-wrapper {
+    margin-top: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 20px;
+    color: var(--dlsu-green);
+}
+
+.input-wrapper input {
+    padding-left: 60px;
+}
+
+input[type=checkbox] {
+    width: 1.15em;
+    height: 1.15em;
+    margin-left: 18.15px;
+    margin-right: 25.15px;
+}
+
+input[type=submit] {
+    margin-top: 30px;
+    background-color: var(--dlsu-green);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
