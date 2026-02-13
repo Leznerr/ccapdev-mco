@@ -1,326 +1,124 @@
 /* file: js/view-lab.js */
-
 $(document).ready(function() {
 
-    // ==========================================
-    // 1. INITIALIZATION & CONFIGURATION
-    // ==========================================
-    
-    const buildingSelect = $('#building-selector');
-    const labSelect = $('#lab-selector');
-    const dateInput = $('#date-selector');
-    const timeSelect = $('#time-selector');
-    
-    // 1.1 Populate Building Dropdown from data.js
-    buildingSelect.html('<option value="" disabled selected>Choose a Building...</option>');
-    buildings.forEach(b => {
-        buildingSelect.append(`<option value="${b.id}">${b.name}</option>`);
-    });
+    // --- State & Selectors ---
+    let selectedSeat = null;
+    let walkInName = "Walk-in Student";
+    const isTech = currentUser?.role === "Technician";
 
-    // 1.2 Apply Date Constraints (Today to +7 Days)
-    const today = new Date();
-    const nextWeek = new Date(today);
-    nextWeek.setDate(today.getDate() + 6); 
+    const $bldgSelect = $('#building-selector'), $labSelect = $('#lab-selector'), $date = $('#date-selector');
+    const $seatDisplay = $('#selected-seat-display'), $btnReserve = $('#btn-reserve'), $seatGrid = $('#seat-grid');
+    const $lockedCards = $('#time-card, #confirm-card');
 
-    // Helper to format date as YYYY-MM-DD for HTML input
-    const formatDate = (date) => {
-        const yyyy = date.getFullYear();
-        const mm = String(date.getMonth() + 1).padStart(2, '0');
-        const dd = String(date.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
+    // --- Helpers ---
+    const getSelectedTimes = () => $('.time-slot-checkbox:checked').map((_, el) => el.value).get();
+    const toggleLocks = (locked) => $lockedCards.toggleClass('locked-element', locked).toggleClass('unlocked-element', !locked);
+    const updateUI = () => {
+        $seatDisplay.text(selectedSeat || 'None').toggleClass('active', !!selectedSeat);
+        $btnReserve.prop('disabled', !(currentUser && selectedSeat && getSelectedTimes().length));
     };
 
-    dateInput.attr('min', formatDate(today));
-    dateInput.attr('max', formatDate(nextWeek));
-    dateInput.val(formatDate(today)); 
+    // --- 1. Initialization ---
+    const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"];
+    const formatTime = t => { let [h, m] = t.split(':'); return `${h % 12 || 12}:${m} ${h >= 12 ? 'PM' : 'AM'}`; };
 
-    // 1.3 Check User Role & Setup Context
-    let walkInName = "Walk-in Student"; // Default generic name
+    timeSlots.forEach((start, i) => {
+        if (i === timeSlots.length - 1) return;
+        const val = `${start} - ${timeSlots[i + 1]}`, id = `time-${i}`;
+        $('#time-slots-grid').append(`<div class="time-slot-option"><input type="checkbox" id="${id}" value="${val}" class="time-slot-checkbox"><label for="${id}" class="time-slot-label">${formatTime(start)} - ${formatTime(timeSlots[i + 1])}</label></div>`);
+    });
 
-    if (typeof currentUser !== 'undefined' && currentUser) {
-        if (currentUser.role === "Technician") {
-            // TECHNICIAN MODE
-            // Check if a specific name was passed from Admin Dashboard (Session Storage)
-            if(sessionStorage.getItem('currentWalkIn')) {
-                walkInName = sessionStorage.getItem('currentWalkIn');
-            }
-            
-            // Show Technician Controls
-            $('#tech-context').show(); 
-            $('#walkin-display-name').text(walkInName);
-            $('#student-controls').hide();            
-            $('#btn-reserve').text("Confirm Walk-in Reservation").css("background-color", "#e67e22"); 
-        }
-    } else {
-        // GUEST MODE (Strict Restriction)
-        $('#btn-reserve').text("Login to Reserve").prop('disabled', true).css('background-color', '#adb5bd');
-        $('.checkbox-group').hide();
+    buildings.forEach(b => $bldgSelect.append(new Option(b.name, b.id)));
+    
+    // Set dates (Today to +6 days) using quick ISO strings
+    const d = new Date(), f = date => date.toISOString().split('T')[0];
+    $date.attr({ min: f(d), max: f(new Date(d.setDate(d.getDate() + 6))) }).val(f(new Date()));
+
+    if (isTech) {
+        walkInName = sessionStorage.getItem('currentWalkIn') || walkInName;
+        $('#tech-context').show(); $('#walkin-display-name').text(walkInName);
+        $('#student-controls').hide(); $btnReserve.text("Confirm Walk-in");
+    } else if (!currentUser) {
+        $btnReserve.text("Login Required").prop('disabled', true); $('#student-controls').hide();
     }
 
+    // --- 2. UI Flow Events ---
+    $bldgSelect.change(function() {
+        selectedSeat = null; $('.time-slot-checkbox').prop('checked', false); updateUI();
+        $labSelect.html('<option value="" disabled selected>Select a lab room...</option>')
+                  .append(labs.filter(l => l.buildingId === this.value).map(l => new Option(l.name, l.id)));
+        $('#lab-group').fadeIn(); $('#lab-info-box, #map-wrapper').hide();
+        toggleLocks(true); $('#map-placeholder').show();
+    });
 
-    // ==========================================
-    // 2. DROPDOWN EVENTS
-    // ==========================================
-
-    // Event: Building Selected -> Populate Labs
-    buildingSelect.change(function() {
-        const selectedBldgId = $(this).val();
-        const filteredLabs = labs.filter(l => l.buildingId === selectedBldgId);
-        resetSelection();
+    $labSelect.change(function() {
+        const lab = labs.find(l => l.id === this.value);
+        if (!lab) return;
+        selectedSeat = null; $('.time-slot-checkbox').prop('checked', false); updateUI();
         
-        labSelect.html('<option value="" disabled selected>Choose a Lab...</option>');
-        filteredLabs.forEach(l => {
-            labSelect.append(`<option value="${l.id}">${l.name}</option>`);
-        });
-
-        // UI Updates
-        $('#lab-group').fadeIn();
-        $('#lab-info-box').hide();
-        $('#date-time-card').css({ 'opacity': '0.5', 'pointer-events': 'none' });
-        $('#map-placeholder').show();
-        $('#map-wrapper').hide();
-    });
-
-    // Event: Lab Selected -> Show Details & Map
-    labSelect.change(function() {
-        const selectedLabId = $(this).val();
-        const lab = labs.find(l => l.id === selectedLabId);
-
-        if (lab) {
-            resetSelection();
-            $('#lab-location').text(lab.location);
-            $('#lab-capacity').text(`${lab.capacity} Seats`);
-            $('#lab-info-box').fadeIn();
-            
-            // Unlock Date/Time Selection
-            $('#date-time-card').css({ 'opacity': '1', 'pointer-events': 'auto' });
-            
-            // Switch Map View
-            $('#map-placeholder').hide();
-            $('#map-wrapper').fadeIn();
-            
-            renderSeats();
-        }
-    });
-
-    // Event: Date or Time Changed -> Refresh Map
-    $('#date-selector, #time-selector').change(function(){
-        resetSelection();
+        $('#lab-location').text(lab.location); $('#lab-capacity').text(`${lab.capacity} Seats`);
+        $('#lab-info-box, #map-wrapper').fadeIn();
+        toggleLocks(false); $('#map-placeholder').hide();
         renderSeats();
     });
 
+    $date.change(() => $labSelect.val() && renderSeats());
+    $(document).on('change', '.time-slot-checkbox', () => { updateUI(); renderSeats(); });
 
-    // ==========================================
-    // 3. SEAT MAP RENDERING (Grid System)
-    // ==========================================
-    
-    let selectedSeats = [];
-
-    function updateSelectionDisplay() {
-        if (selectedSeats.length === 0) {
-            $('#selected-seat-display').text('Select Seat(s)').removeClass('active');
-            if (currentUser) $('#btn-reserve').prop('disabled', true);
-            return;
-        }
-
-        $('#selected-seat-display')
-            .text(`Selected (${selectedSeats.length}): ${selectedSeats.join(', ')}`)
-            .addClass('active');
-        if (currentUser) $('#btn-reserve').prop('disabled', false);
-    }
-
+    // --- 3. Map Rendering ---
     function renderSeats() {
-        const grid = $('#seat-grid');
-        grid.empty(); 
+        $seatGrid.empty().append('<div></div>').append([1,2,3,4,5].map(c => `<div class="grid-label">${c}</div>`));
+        const occupied = new Map(), selTimes = getSelectedTimes();
+        
+        reservations.filter(r => r.lab === $labSelect.val() && r.date === $date.val() && r.status === "Active" && selTimes.includes(r.time))
+                    .forEach(r => occupied.set(r.seat, r));
 
-        const currentLabId = labSelect.val();
-        const date = dateInput.val();
-        const time = timeSelect.val();
-        const matchingReservations = reservations.filter(r =>
-            r.lab === currentLabId &&
-            r.date === date &&
-            r.time === time &&
-            r.status === "Active"
-        );
-        const occupiedSeatSet = new Set(matchingReservations.map(r => r.seat));
+        if (selectedSeat && occupied.has(selectedSeat)) selectedSeat = null;
+        updateUI();
 
-        // If any selected seat was taken during refresh, auto-remove it from selection.
-        selectedSeats = selectedSeats.filter(seatId => !occupiedSeatSet.has(seatId));
-        updateSelectionDisplay();
-
-        // Grid Configuration: 5 Columns x 4 Rows
-        const rows = ['A', 'B', 'C', 'D'];
-        const cols = [1, 2, 3, 4, 5];
-
-        // 3.1 Render Header Row (1, 2, 3, 4, 5)
-        grid.append('<div></div>'); // Empty top-left corner
-        cols.forEach(col => grid.append(`<div class="grid-label">${col}</div>`));
-
-        // 3.2 Render Rows (A, B, C, D)
-        rows.forEach(row => {
-            grid.append(`<div class="grid-label">${row}</div>`); // Row Label
-
-            cols.forEach(col => {
-                const seatId = `${row}${col}`;
+        ['A', 'B', 'C', 'D'].forEach(row => {
+            $seatGrid.append(`<div class="grid-label">${row}</div>`);
+            [1,2,3,4,5].forEach(col => {
+                const id = `${row}${col}`, res = occupied.get(id), $s = $(`<div class="seat">${id}</div>`);
                 
-                // Check Global Reservations Array (from data.js)
-                const res = matchingReservations.find(r => r.seat === seatId);
-
-                const seatEl = $('<div></div>').addClass('seat').text(seatId);
-                
-                // === SEAT STATE LOGIC ===
                 if (res) {
-                    // --- OCCUPIED ---
                     if (currentUser && res.reserver === currentUser.username) {
-                        // Current User's Booking
-                        seatEl.addClass('user-owned');
-                        seatEl.append(`<span class="tooltip-text">Your Booking</span>`);
+                        $s.addClass('user-owned').append(`<span class="tooltip-text">Your Booking</span>`);
                     } else {
-                        // Other User's Booking
-                        seatEl.addClass('occupied');
-                        
-                        if (res.isAnonymous) {
-                            seatEl.append(`<span class="tooltip-text">Occupied (Anonymous)</span>`);
-                        } else {
-                            // SHOW NAME as explicit clickable link (spec requirement)
-                            const profileUrl = `profile.html?user=${encodeURIComponent(res.reserver)}`;
-                            seatEl.append(
-                                `<span class="tooltip-text">Reserved by: <a class="tooltip-user-link" href="${profileUrl}">${res.reserver}</a><small>(Click username to view profile)</small></span>`
-                            );
-                        }
+                        $s.addClass('occupied').append(res.isAnonymous ? `<span class="tooltip-text">Occupied (Anon)</span>` : `<span class="tooltip-text">Reserved by: <br><span class="tooltip-user-link">${res.reserver}</span></span>`);
+                        if (!res.isAnonymous) $s.css('cursor', 'pointer').click(() => window.location.href = `profile.html?user=${encodeURIComponent(res.reserver)}`);
                     }
                 } else {
-                    // --- AVAILABLE ---
-                    seatEl.attr('title', 'Available');
-                    if (selectedSeats.includes(seatId)) seatEl.addClass('selected');
-                    seatEl.click(function() {
-                        if (selectedSeats.includes(seatId)) {
-                            selectedSeats = selectedSeats.filter(id => id !== seatId);
-                            $(this).removeClass('selected');
-                        } else {
-                            selectedSeats.push(seatId);
-                            $(this).addClass('selected');
-                        }
-
-                        updateSelectionDisplay();
+                    $s.attr('title', 'Available').toggleClass('selected', selectedSeat === id).click(function() {
+                        selectedSeat = selectedSeat === id ? null : id;
+                        renderSeats(); // Simple state-based re-render
                     });
                 }
-                grid.append(seatEl);
+                $seatGrid.append($s);
             });
         });
     }
 
-    function resetSelection() {
-        selectedSeats = [];
-        $('#selected-seat-display').text('Select Seat(s)').removeClass('active');
-        if (currentUser) $('#btn-reserve').prop('disabled', true);
-    }
+    setInterval(() => $labSelect.val() && renderSeats(), 10000);
 
-
-    // ==========================================
-    // 4. AUTO-REFRESH (Real-Time Feature)
-    // ==========================================
-    // Refreshes the grid every 10 seconds to check for new bookings
-    setInterval(function() {
-        if (labSelect.val()) { 
-            console.log("Auto-refreshing seat availability...");
-            renderSeats();
-        }
-    }, 10000); 
-
-
-    // ==========================================
-    // 5. RESERVATION ACTION
-    // ==========================================
-    
-    $('#btn-reserve').click(function() {
-        // Double check login
-        if (!currentUser) {
-            alert("Please login to reserve.");
-            window.location.href = "login.html";
-            return;
-        }
-
-        if (selectedSeats.length === 0) {
-            alert("Please select at least one seat.");
-            return;
-        }
-
-        // Prepare Reservation Data
-        let finalReserver = currentUser.username;
-        let isAnon = false;
-
-        if (currentUser.role === "Technician") {
-            finalReserver = walkInName; 
-            isAnon = false; // Walk-ins cannot be anonymous
-        } else {
-            finalReserver = currentUser.username;
-            isAnon = $('#anon-check').is(':checked');
-        }
-
-        // Final conflict check right before save (prevents stale UI bookings).
-        const labId = labSelect.val();
-        const selectedDate = dateInput.val();
-        const selectedTime = timeSelect.val();
-        const conflictingSeats = selectedSeats.filter(seatId =>
-            reservations.some(r =>
-                r.lab === labId &&
-                r.date === selectedDate &&
-                r.time === selectedTime &&
-                r.seat === seatId &&
-                r.status === "Active"
-            )
-        );
-
-        if (conflictingSeats.length > 0) {
-            alert(`These seats are no longer available: ${conflictingSeats.join(', ')}. Please select again.`);
-            selectedSeats = selectedSeats.filter(seatId => !conflictingSeats.includes(seatId));
-            updateSelectionDisplay();
-            renderSeats();
-            return;
-        }
-
-        // One booking can include multiple slots; group them under one reservation id.
-        const reservationGroupId = Date.now();
-        const newReservations = selectedSeats.map((seatId, index) => ({
-            id: reservationGroupId + index,
-            reservationGroupId,
-            lab: labId,
-            seat: seatId,
-            date: selectedDate,
-            time: selectedTime,
-            requestDateTime: new Date().toISOString(),
-            reserver: finalReserver,
-            status: "Active",
-            isAnonymous: isAnon
-        }));
-
-        // Save to Mock Database (Array in data.js)
-        reservations.push(...newReservations);
-
-        // UI Feedback
-        showSuccessModal(reservationGroupId, newReservations.length);
-        resetSelection();
-        renderSeats(); // Immediately refresh grid to show "User Owned" status
-    });
-
-    // Display Success Modal with Reference ID 
-    function showSuccessModal(referenceId, slotCount) {
-
+    // --- 4. Submission ---
+    $btnReserve.click(function() {
+        if (!currentUser) return window.location.href = "login.html";
+        const selTimes = getSelectedTimes();
         
-        // Inject Reference ID into Modal Text
-        // Uses inline style for immediate visibility
-        $('.modal-content p').html(`Reservation Reference:<br><strong style="font-size: 1.5rem; color:#387C44;">#${referenceId}</strong><br><small>${slotCount} slot(s) reserved</small>`);
-        
-        // Show Modal
+        if (reservations.some(r => r.lab === $labSelect.val() && r.date === $date.val() && r.seat === selectedSeat && selTimes.includes(r.time) && r.status === "Active")) {
+            alert(`Oops! Seat ${selectedSeat} was just taken.`); return renderSeats();
+        }
+
+        const groupId = Date.now(), isAnon = !isTech && $('#anon-check').is(':checked');
+        reservations.push(...selTimes.map((t, i) => ({ id: groupId + i, reservationGroupId: groupId, lab: $labSelect.val(), seat: selectedSeat, date: $date.val(), time: t, reserver: isTech ? walkInName : currentUser.username, status: "Active", isAnonymous: isAnon })));
+
+        $('#modal-ref-id').text(`#${groupId}`); $('#modal-slots-count').text(`${selTimes.length} slot(s) reserved`);
         $('#success-modal').fadeIn(300);
-    }
-
-    // Close Modal Handler
-    $('#btn-finish').click(function() {
-        $('#success-modal').fadeOut();
-        resetSelection(); // Reset selection state after finishing
-        renderSeats();    // One last re-render to ensure clean state
+        
+        selectedSeat = null; $('.time-slot-checkbox').prop('checked', false);
+        renderSeats();
     });
 
+    $('#btn-finish').click(() => $('#success-modal').fadeOut());
 });

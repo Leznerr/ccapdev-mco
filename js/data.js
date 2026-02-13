@@ -14,13 +14,41 @@ const users = [
     },
     {
         username: "john_doe",
-        role: "Technician",
+        role: "Lab Technician",
         firstName: "John",
         lastName: "Doe",
         email: "john.doe@dlsu.edu.ph",
-        bio: "Lab Technician",
+        bio: "Lab Technician, IT Support, and Loving Father",
         profilePic: "https://ui-avatars.com/api/?name=John+Doe&background=random&color=fff&size=128"
-    }
+    },
+    {
+        username: "bea_cantillon",
+        role: "Lab Technician",
+        firstName: "Bea",
+        lastName: "Cantillon",
+        email: "bea_cantillon@dlsu.edu.ph",
+        bio: "Lab Technician | Live, Laugh, Love",
+        profilePic: "https://ui-avatars.com/api/?name=Bea+Cantillon&background=random&color=fff&size=128"
+    },
+    {
+        username: "gabrielle_enerio",
+        role: "Student",
+        firstName: "Gabrielle",
+        lastName: "Enerio",
+        email: "gabrielle_enerio@dlsu.edu.ph",
+        bio: "ID 124 | Aspiring Game Dev",
+        profilePic: "https://ui-avatars.com/api/?name=Gabrielle+Enerio&background=random&color=fff&size=128"
+    },
+    {
+        username: "abigail_vicencio",
+        role: "Student",
+        firstName: "Abigail",
+        lastName: "Vicencio",
+        email: "abigail_vicencio@dlsu.edu.ph",
+        bio: "Student :I :) :D",
+        profilePic: "https://ui-avatars.com/api/?name=Abigail+Vicencio&background=random&color=fff&size=128"
+    },
+
 ];
 
 // Buildings catalog
@@ -44,6 +72,11 @@ const buildings = [
         id: "SJ",
         name: "St. Joseph Hall",
         description: "College of Science",
+    },
+    {
+        id: "MH",
+        name: "Miguel Hall",
+        description: "Manufacturing and Design Labs",
     }
 ];
 

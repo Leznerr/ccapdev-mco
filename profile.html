@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - ArcherLabs</title>
+    
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span>ArcherLabs</span>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="profile.html" class="nav-link active">Profile</a></li>
+                <li><a href="view-lab.html" class="nav-link">Reserve a Lab</a></li>
+            </ul>
+    </nav>
+
+    <main class="profile-container">
+        
+        <aside class="sidebar-column">
+            <div class="glass-card user-card">
+                <div class="avatar-container">
+                    <img id="user-pic" src="assets/default_avatar.png" alt="Profile Picture" class="avatar">
+                    <div class="status-indicator online" title="Online"></div>
+                </div>
+                
+                <div id="profile-display">
+                    <h2 id="user-name" class="user-name">Loading...</h2>
+                    <p id="user-desc" class="bio">...</p>
+                </div>
+
+                <div id="profile-edit" style="display: none;" class="edit-mode-container">
+                    <div class="input-wrapper">
+                        <i class="fas fa-user icon"></i>
+                        <input type="text" id="edit-name" class="custom-input" placeholder="Full Name">
+                    </div>
+                    <div class="input-wrapper" style="margin-top: 10px;">
+                         <i class="fas fa-image icon"></i>
+                         <input type="text" id="edit-pic" class="custom-input" placeholder="Profile Picture URL">
+                    </div>
+                    <div class="input-wrapper" style="margin-top: 10px;">
+                        <i class="fas fa-quote-left icon" style="top: 14px;"></i>
+                        <textarea id="edit-desc" class="custom-input" rows="3" placeholder="Bio / Description" style="padding-top: 12px; resize: vertical;"></textarea>
+                    </div>
+                    <button id="btn-save-profile" class="btn-primary w-100" style="margin-top: 15px;">Save Changes</button>
+                </div>
+
+                <p id="user-email" class="email-text">
+                    <i class="fas fa-envelope"></i> <span>...</span>
+                </p>
+                
+                <div class="stats-box">
+                    <div class="stat-item">
+                        <span class="stat-number" id="total-res">0</span>
+                        <span class="stat-label">Active Bookings</span>
+                    </div>
+                </div>
+                
+                <button id="btn-toggle-edit" class="btn-outline-primary w-100">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </button>
+
+                <button id="btn-delete-account" class="btn-text-danger w-100">
+                    <i class="fas fa-trash-alt"></i> Delete Account
+                </button>
+            </div>
+        </aside>
+
+        <section class="main-column" id="history">
+            <div class="glass-card history-card">
+                
+                <div class="content-header">
+                    <h1 class="card-title">Reservation History</h1>
+                    <div class="search-box input-wrapper">
+                        <i class="fas fa-search icon"></i>
+                        <input type="text" id="history-search" class="custom-input" placeholder="Search lab, date, or seat...">
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="history-table" id="res-table">
+                        <thead>
+                            <tr>
+                                <th>Lab Room</th>
+                                <th>Date & Time</th>
+                                <th>Seat</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            </tbody>
+                    </table>
+                    
+                    <div id="empty-state" class="empty-state" style="display: none; padding: 60px 0;">
+                        <div class="pulse-ring">
+                            <i class="fas fa-calendar-plus"></i> 
+                        </div>
+                        <h4>No Active Reservations</h4>
+                        <p style="margin-bottom: 25px;">You haven't booked any lab slots yet.</p>
+                        <a href="view-lab.html" class="btn-primary" style="text-decoration: none; display: inline-block;">
+                            <i class="fas fa-search-location"></i> Find a Lab
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <div id="delete-account-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="danger-animation">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Delete Account?</h2>
+            <p class="warning-text">This will permanently remove your profile and cancel all your active reservations. This action cannot be undone.</p>
+            
+            <div class="modal-actions">
+                <button id="cancel-delete" class="btn-secondary">Cancel</button>
+                <button id="confirm-delete" class="btn-danger">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-reservation-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card" style="width: 400px; text-align: left;">
+            <div class="card-header" style="justify-content: center;">
+                <div class="step-badge"><i class="fas fa-pen"></i></div>
+                <h3 class="card-title">Edit Reservation</h3>
+            </div>
+            
+            <div class="edit-res-form">
+                <input type="hidden" id="edit-res-id">
+
+                <div class="form-group" style="margin-bottom: 5px;">
+                    <label class="input-label">Lab Room</label>
+                    <select id="edit-res-lab" class="custom-select"></select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 5px;">
+                    <label class="input-label">Date</label>
+                    <input type="date" id="edit-res-date" class="custom-input">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 5px;">
+                    <label class="input-label">Time Slot</label>
+                    <select id="edit-res-time" class="custom-select">
+                        <option value="09:00 - 09:30">09:00 AM - 09:30 AM</option>
+                        <option value="09:30 - 10:00">09:30 AM - 10:00 AM</option>
+                        <option value="10:00 - 10:30">10:00 AM - 10:30 AM</option>
+                        <option value="10:30 - 11:00">10:30 AM - 11:00 AM</option>
+                        <option value="11:00 - 11:30">11:00 AM - 11:30 AM</option>
+                        <option value="11:30 - 12:00">11:30 AM - 12:00 PM</option>
+                        <option value="13:00 - 13:30">01:00 PM - 01:30 PM</option>
+                        <option value="13:30 - 14:00">01:30 PM - 02:00 PM</option>
+                        <option value="14:00 - 14:30">02:00 PM - 02:30 PM</option>
+                        <option value="14:30 - 15:00">02:30 PM - 03:00 PM</option>
+                        <option value="15:00 - 15:30">03:00 PM - 03:30 PM</option>
+                        <option value="15:30 - 16:00">03:30 PM - 04:00 PM</option>
+                        <option value="16:00 - 16:30">04:00 PM - 04:30 PM</option>
+                        <option value="16:30 - 17:00">04:30 PM - 05:00 PM</option>
+                        <option value="17:00 - 17:30">05:00 PM - 05:30 PM</option>
+                        <option value="17:30 - 18:00">05:30 PM - 06:00 PM</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label class="input-label">Seat</label>
+                    <select id="edit-res-seat" class="custom-select"></select>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="display: flex;">
+                <button id="cancel-edit-reservation" class="btn-secondary" style="flex: 1;">Cancel</button>
+                <button id="save-edit-reservation" class="btn-primary" style="flex: 2;">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/profile.js"></script> 
+</body>
+</html>

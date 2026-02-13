@@ -1,0 +1,47 @@
+.container {
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 350px 650px;
+    column-gap: 30px;
+    row-gap: 15px;
+}
+
+.content {
+    background-color: #D9D9D9;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.inner {
+    background-color: #F2F0EF;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+}
+
+input, select, button {
+    border-radius: 5px;
+    height: 50px;
+    width: 200px;
+    font-size: 15px;
+}
+
+p {
+    font-weight: bold;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+#available-slots {
+    grid-column: 2;
+    grid-row: 1/span 2;
+}
+
+#find-slots {
+    background-color: #417C33;
+    color:#F2F0EF;
+    font-weight: bold;
+}
