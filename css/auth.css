@@ -6,21 +6,21 @@
     --dlsu-green: #387C44;  --dlsu-accent: #3FED87;
     --white: #fff;          --dark: #2d3436;
     --bg-color: #f0f2f5;    --light-grey: #D9D9D9;
-    --dark-grey: #969090;
+    --dark-grey: #969090;   --dlsu-green-light: #4CD137;
 }
 
 body {
     margin: 0; 
     min-height: 100vh;
-    overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    overflow: hidden; /* prevents bg to scroll*/
     background-image: /* added gradient to bg-image */
         linear-gradient(to bottom, rgba(150, 144, 144, 0.4), rgba(17, 20, 21, 0.7)),
         url("../assets/auth-bg.jpg");
     background-size: cover 250%;
     background-attachment: fixed;
     background-position: right;
-    background-repeat: no-repeat;
+
+    font-family: 'Segoe UI', Tahoma, sans-serif;
     color: #495057; 
     line-height: 1.6;
 }
@@ -33,6 +33,7 @@ body {
     grid-template-columns: 1fr 1fr;
     align-items: center;
     column-gap: 5cm;
+    view-transition-name: auth-container;
 }
 
 .header-text {
@@ -41,6 +42,7 @@ body {
     justify-content: center;
     min-height: 800px;
     gap: 10px;
+    view-transition-name: header-text-content;
 }
 
 
@@ -53,18 +55,16 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-
+    view-transition-name: auth-form-content;
 }
 
 .left-container{
     padding-left: 150px;
-    left: 200px;
     text-align: left;
 }
 
 .right-container{
     padding-right: 200px;
-    right: 200px;
     text-align: right;
 }
 
@@ -111,14 +111,14 @@ body {
 
 .auth-form hr {
     margin-top: 30px;
-    margin-bottom: 45px;
+    margin-bottom: 20px;
     border: none;
     border-top: 1px solid var(--dark-grey);
 }
 
 .auth-form p {
     align-self: center;
-    margin-top: 20px;
+    margin-bottom: 30px;
     color: var(--dark);
     place-self: center;
 }
@@ -163,19 +163,6 @@ input[type=checkbox] {
     margin-left: 1.1em;
 }
 
-input[type=submit] {
-    margin-top: 30px;
-    background-color: var(--dlsu-green);
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-a { /* hyperlinks */
-    color: var(--dlsu-green);
-    text-decoration: none;
-}
-
 .name-field {
     display: flex;
     gap: 10px;
@@ -184,6 +171,33 @@ a { /* hyperlinks */
 
 .name-field input {
     flex: 1;
+}
+
+/* submit button and hyperlinks states *****************/
+input[type=submit] {
+    margin-top: 30px;
+    background-color: var(--dlsu-green);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: var(--dlsu-green-light);
+    box-shadow: 0 4px 10px rgba(76, 209, 55, 0.4);
+    transform: scale(1.03);
+
+    transition: all 0.3s ease;
+}
+
+a { /* hyperlinks */
+    color: var(--dlsu-green);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--dlsu-green-light);
+    text-decoration: underline;
 }
 
 /* =========================================
@@ -196,6 +210,12 @@ a { /* hyperlinks */
     border: 2px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
+    background-color: white;
+    color: var(--dark);
+}
+
+#type option {
+    color: var(--dark-grey);
     background-color: white;
 }
 
@@ -211,5 +231,50 @@ label[for="type"] {
 label[for="remember"] {
     margin-right: 235px;
     color: var(--dark);
+}
+
+
+/* =========================================
+   5. INBETWEEN AUTH TRANSITION
+   ========================================= */
+
+@view-transition {
+    navigation: auto;
+}
+
+/* container morphs smoothly */
+::view-transition-old(auth-container),
+::view-transition-new(auth-container) {
+    animation-duration: 1s;
+}
+
+/* content fades out quickly, then fades in */
+::view-transition-old(auth-form-content),
+::view-transition-old(header-text-content) {
+    animation: fadeOutContent 0.4s ease-out forwards;
+}
+
+::view-transition-new(auth-form-content),
+::view-transition-new(header-text-content) {
+    animation: fadeInContent 0.2s 0.1s ease-in forwards;
+    opacity: 0;
+}
+
+@keyframes fadeOutContent {
+    to {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+}
+
+@keyframes fadeInContent {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
