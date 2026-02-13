@@ -32,7 +32,6 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
-    column-gap: 5cm;
     view-transition-name: auth-container;
 }
 

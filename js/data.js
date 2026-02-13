@@ -10,7 +10,9 @@ const users = [
         email: "renzel@dlsu.edu.ph",
         bio: "CS Student | Developer",
         // Generates an avatar with initials 'RE' and a specific background color (use this api below)
-        profilePic: "https://ui-avatars.com/api/?name=Renzel+Eleydo&background=0D8ABC&color=fff&size=128"
+        profilePic: "https://ui-avatars.com/api/?name=Renzel+Eleydo&background=0D8ABC&color=fff&size=128",
+        // TEMPORARY PASSWORD STORAGE
+        password: "12345678"
     },
     {
         username: "john_doe",
@@ -19,7 +21,8 @@ const users = [
         lastName: "Doe",
         email: "john.doe@dlsu.edu.ph",
         bio: "Lab Technician, IT Support, and Loving Father",
-        profilePic: "https://ui-avatars.com/api/?name=John+Doe&background=random&color=fff&size=128"
+        profilePic: "https://ui-avatars.com/api/?name=John+Doe&background=random&color=fff&size=128",
+        password: "password123"
     },
     {
         username: "bea_cantillon",
@@ -28,7 +31,8 @@ const users = [
         lastName: "Cantillon",
         email: "bea_cantillon@dlsu.edu.ph",
         bio: "Lab Technician | Live, Laugh, Love",
-        profilePic: "https://ui-avatars.com/api/?name=Bea+Cantillon&background=random&color=fff&size=128"
+        profilePic: "https://ui-avatars.com/api/?name=Bea+Cantillon&background=random&color=fff&size=128",
+        password: "password456"
     },
     {
         username: "gabrielle_enerio",
@@ -37,7 +41,8 @@ const users = [
         lastName: "Enerio",
         email: "gabrielle_enerio@dlsu.edu.ph",
         bio: "ID 124 | Aspiring Game Dev",
-        profilePic: "https://ui-avatars.com/api/?name=Gabrielle+Enerio&background=random&color=fff&size=128"
+        profilePic: "https://ui-avatars.com/api/?name=Gabrielle+Enerio&background=random&color=fff&size=128",
+        password: "abcdef123"
     },
     {
         username: "abigail_vicencio",
@@ -46,7 +51,8 @@ const users = [
         lastName: "Vicencio",
         email: "abigail_vicencio@dlsu.edu.ph",
         bio: "Student :I :) :D",
-        profilePic: "https://ui-avatars.com/api/?name=Abigail+Vicencio&background=random&color=fff&size=128"
+        profilePic: "https://ui-avatars.com/api/?name=Abigail+Vicencio&background=random&color=fff&size=128",
+        password: "passw0rd"
     },
 
 ];
