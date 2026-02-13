@@ -1,15 +1,15 @@
-/* Element selector */
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #e9f5ec; /* Match view-lab green tint */
-  color: #495057; /* Match view-lab text color */
+  background-color: #e9f5ec; 
+  color: #495057; 
   line-height: 1.6;
 }
 
-/* ID selector */
+
 #main-header {
-  background-color: #387C44; /* Updated to match DLSU green */
+  background-color: #387C44; 
   color: white;
   padding: 20px;
   text-align: left;
@@ -24,7 +24,6 @@ body {
 
 
 
-/* Class selector for main page layout */
 .container {
   display: grid;
   grid-template-areas: 
@@ -37,7 +36,7 @@ body {
   padding: 0px;
 }
 
-/* Grid area assignment */
+
 #main-header {
   grid-area: header;
 }
@@ -65,7 +64,7 @@ body {
   justify-content: center;
 }
 
-/* Styling h1 using class selector */
+
 .web-name {
   margin: 0;
   font-size: 2em;
@@ -73,21 +72,21 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* Sidebar nav layout */
+
 .sidebar-nav {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-/* Sidebar links */
+
 .sidebar-link {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
   text-decoration: none;
-  color: #495057; /* Match view-lab text */
+  color: #495057; 
   border-radius: 6px;
   transition: 0.2s ease;
   font-weight: 500;
@@ -99,9 +98,9 @@ body {
   color: #387C44;
 }
 
-/* Hover effect */
+
 .sidebar-link:hover {
-  background-color: #387C44; /* Match DLSU green */
+  background-color: #387C44; 
   color: white;
 }
 
@@ -109,7 +108,7 @@ body {
   color: white;
 }
 
-/* Active link */
+
 .sidebar-link.active {
   background-color: #387C44;
   color: white;
@@ -119,7 +118,7 @@ body {
   color: white;
 }
 
-/* Logout styling */
+
 .sidebar-link.logout:hover {
   background-color: #c0392b;
 }
@@ -128,7 +127,6 @@ body {
   box-sizing: border-box;
 }
 
-/* Remove extra left and right margins, due to padding */
 .row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -136,7 +134,7 @@ body {
   margin-bottom: 20px;
 }
 
-/* Style the counter cards */
+
 .card {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   padding: 16px;
@@ -183,7 +181,7 @@ body {
   justify-content: stretch;
 }
 
-/* Graph placeholder */
+
 .graph {
   height: 350px;
   background-color: #f8f9fa;
@@ -202,7 +200,6 @@ body {
   height: 280px !important;
 }
 
-/* Responsive for smaller screens */
 @media screen and (max-width: 768px) {
   .reservation-section {
     grid-template-columns: 1fr;
@@ -286,7 +283,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* Responsive: scroll table horizontally on small screens */
 @media screen and (max-width: 768px) {
   .table-container {
     overflow-x: auto;
@@ -295,8 +291,8 @@ body {
 
 .card-bg {
   position: relative;
-  color: #333; /* Dark text instead of white */
-  background-color: #f8f9fa; /* Match lab-card background */
+  color: #333; 
+  background-color: #f8f9fa; 
   min-height: 120px;
   display: flex;
   flex-direction: column;
@@ -306,7 +302,7 @@ body {
   padding: 20px 15px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  border: 3px solid #e9ecef; /* Default border, will be overridden */
+  border: 3px solid #e9ecef; 
   transition: 0.2s ease;
 }
 
@@ -315,22 +311,22 @@ body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Border colors for each card */
+
 .card-bg.card-1 { 
   border-color: #3498db; 
-} /* Blue */
+} 
 
 .card-bg.card-2 { 
   border-color: #f1c40f; 
-} /* Yellow */
+} 
 
 .card-bg.card-3 { 
   border-color: #387C44; 
-} /* Green */
+}
 
 .card-bg.card-4 { 
   border-color: #e74c3c; 
-} /* Red */
+} 
 
 .card-bg h3, .card-bg p {
   position: relative;
@@ -338,25 +334,24 @@ body {
   margin: 0;
 }
 
-/* Value text - larger, bold, at top */
+
 .card-bg p {
   font-size: 1.8em;
   font-weight: 700;
   color: #333;
   margin-bottom: 8px;
-  order: -1; /* Move to top */
+  order: -1;
 }
 
-/* Title text - smaller, below value */
 .card-bg h3 {
   font-size: 0.9em;
   font-weight: 500;
   color: #495057;
 }
 
-/* Lab Card Styling - Match view-lab.css */
+
 .lab-card {
-  background-color: #f8f9fa; /* Match control-card background */
+  background-color: #f8f9fa; 
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
@@ -384,7 +379,7 @@ body {
 .lab-card label {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #387C44; /* Match DLSU green */
+  color: #387C44; 
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 5px;
@@ -413,7 +408,7 @@ body {
   margin-top: 10px;
   padding: 12px;
   border: none;
-  background-color: #387C44; /* Match DLSU green */
+  background-color: #387C44; 
   color: white;
   font-weight: 600;
   border-radius: 6px;
@@ -516,7 +511,7 @@ body {
   background-color: #962420;
 }
 
-/* Removal Modal */
+
 .remove-content {
   text-align: center;
   padding: 30px;
@@ -561,7 +556,7 @@ body {
 }
 
 .highlight-card {
-  background: #e9f5ec; /* Match view-lab highlight */
+  background: #e9f5ec; 
   border-color: #d1e7dd;
   box-shadow: 0 4px 10px rgba(56, 124, 68, 0.15);
 }
