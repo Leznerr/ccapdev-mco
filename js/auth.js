@@ -18,8 +18,25 @@ function isValidPassword(password) {
    2. FORM HANDLERS
    ========================================= */
 
-// login form submission
-document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+// initialize form handlers
+function initializeFormHandlers() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    
+    // only attach listeners if not already attached
+    if (loginForm && !loginForm.dataset.listenerAttached) {
+        loginForm.addEventListener('submit', handleLoginSubmit);
+        loginForm.dataset.listenerAttached = 'true';
+    }
+    
+    if (registerForm && !registerForm.dataset.listenerAttached) {
+        registerForm.addEventListener('submit', handleRegisterSubmit);
+        registerForm.dataset.listenerAttached = 'true';
+    }
+}
+
+// login form submission handler
+function handleLoginSubmit(e) {
     e.preventDefault();
     
     const email = document.getElementById('email').value.trim();
@@ -37,10 +54,10 @@ document.getElementById('loginForm')?.addEventListener('submit', function(e) {
     
     // simulate authentication
     authenticateUser(email, password);
-});
+}
 
-// register form submission
-document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+// register form submission handler
+function handleRegisterSubmit(e) {
     e.preventDefault();
     
     const firstName = document.getElementById('first-name').value.trim();
@@ -70,9 +87,12 @@ document.getElementById('registerForm')?.addEventListener('submit', function(e) 
         return;
     }
     
-    // Create user account
+    // create user account
     createUser(firstName, lastName, email, password, type);
-});
+}
+
+// initialize on page load
+document.addEventListener('DOMContentLoaded', initializeFormHandlers);
 
 
 /* =========================================
