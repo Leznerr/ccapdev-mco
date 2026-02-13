@@ -35,6 +35,11 @@ a {
     text-decoration: none;
 }
 
+#available-slots {
+    grid-column: 2;
+    grid-row: 1/span 2;
+}
+
 #find-slots {
     background-color: #417C33;
     color:#F2F0EF;

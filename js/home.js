@@ -8,14 +8,6 @@ lab.addEventListener("click", function() {
 });
 
 btn.addEventListener("click", function() {
-    const bldg = document.getElementById("building-selector").value;
-    const date = document.getElementById("date-selector").value;
-    const time = document.getElementById("time-selector").value;
-
-    if(bldg != "" && date != '' && time != ""){
-        document.location.href="view-labs.html"
-    }
-    else{
-        document.getElementById("error-msg").innerHTML = "Invalid Selection";
-    }
+        document.location.href="view-lab.html"
+        //document.getElementById("error-msg").innerHTML = "Invalid Selection";
 });

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - AnimoLabs</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+  <div class="container">
+    <!--HEADER-->
+    <header id="main-header">
+      <h1 class="web-name">AnimoLabs</h1>
+    </header>
+
+    <!--SIDEBAR-->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active">
+          <i class="fa-solid fa-house"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="admin-dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-calendar"></i>
+          <span>Reservations</span>
+        </a>
+
+        <a href="admin-dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-desktop"></i>
+          <span>Laboratories</span>
+        </a>
+
+        <a href="view-lab.html" class="sidebar-link">
+          <i class="fa-solid fa-person-walking"></i>
+          <span>Walk-ins</span>
+        </a>
+
+        <a href="profile.html" class="sidebar-link">
+          <i class="fa-solid fa-user"></i>
+          <span>Profile</span>
+        
+        </a>
+
+        <a href="login.html" class="sidebar-link logout">
+          <i class="fa-solid fa-arrow-right-from-bracket">
+          </i><span>Logout</span>
+        </a>
+
+      </nav>
+    </aside>
+
+
+
+
+    <main class="main-content">
+
+      <!-- SUMMARY CARDS -->
+      <div class="row">
+        <div class="column">
+          <div class="card card-bg card-1">
+          <p>23 bookings</p>
+          <h3>Total Reservations Today</h3>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="card card-bg card-2">
+            <p>Gokongwei 304B</p>
+            <h3>Most Used Lab Today</h3>
+          </div>
+        </div>
+
+        <div class="column">
+          <div class="card card-bg card-3">
+            <p>52 seats</p>
+            <h3>Total Available Seats Right Now</h3>
+          </div>
+        </div> 
+
+        <div class="column">
+          <div class="card card-bg card-4">
+            <p>1 students</p>
+            <h3>No-shows Today</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- sTATs + Lab Reservation -->
+      <section class="reservation-section">
+        <div class="reservations">
+          <h2>Reservations Today</h2>
+          <div class="graph">
+            <canvas id="reservationsChart"></canvas>
+          </div>
+        </div>
+
+        <div class="laboratory-avail">
+          <div class="card lab-card">
+            <h3>Laboratory Availability</h3>
+            <form id="lab-form">
+              <label for="lab-building">1. Select Building</label>
+              <select id="lab-building" required>
+                <option value="" disabled selected>Choose a Building...</option>
+                <option value="GK">Gokongwei Hall</option>
+                <option value="AG">Andrew Gonzalez Hall</option>
+                <option value="VL">Velasco Hall</option>
+                <option value="SJ">St. Joseph Hall</option>
+              </select>
+
+              <label for="lab-room">2. Select Lab Room</label>
+              <select id="lab-room" required>
+                <option value="" disabled selected>Choose a Lab...</option>
+                <option value="GK-304B">Gokongwei 304B</option>
+                <option value="GK-404A">Gokongwei 404A</option>
+                <option value="AG-1904">Andrew 1904</option>
+                <option value="AG-702">Andrew 702</option>
+                <option value="VL-201">Velasco 201</option>
+              </select>
+
+              <label for="lab-date">3. Select Date</label>
+              <input type="date" id="lab-date" required />
+              
+              <label for="lab-time">4. Select Time</label>
+              <select id="lab-time" required>
+                <option value="09:00 - 09:30">09:00 AM - 09:30 AM</option>
+                <option value="09:30 - 10:00">09:30 AM - 10:00 AM</option>
+                <option value="10:00 - 10:30">10:00 AM - 10:30 AM</option>
+                <option value="10:30 - 11:00">10:30 AM - 11:00 AM</option>
+                <option value="11:00 - 11:30">11:00 AM - 11:30 AM</option>
+                <option value="11:30 - 12:00">11:30 AM - 12:00 PM</option>
+                <option value="13:00 - 13:30">01:00 PM - 01:30 PM</option>
+                <option value="13:30 - 14:00">01:30 PM - 02:00 PM</option>
+              </select>
+              
+              <button type="submit">Check Availability</button>
+            </form>
+
+            <div class="lab-info" id="lab-info" style="display:none;">
+              <p><strong>Total Seats:</strong> <span id="total-seats">0</span></p>
+              <p><strong>Seats Occupied:</strong> <span id="occupied-seats">0</span></p>
+              <p><strong>Seats Remaining:</strong> <span id="remaining-seats">0</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Resrevation list -->
+      <section class="reservations">
+        <h2>Active Reservations</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Booking ID</th>
+                <th>Building</th>
+                <th>Room</th>
+                <th>Seat</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reservations-tbody">
+              <tr>
+                <td>Renzel Eleydo</td>
+                <td>#101</td>
+                <td>Gokongwei Hall</td>
+                <td>GK-304B</td>
+                <td>A1</td>
+                <td>2026-02-13</td>
+                <td>09:00 - 09:30</td>
+                <td>Active</td>
+                <td><button class="remove-btn">Remove</button></td>
+              </tr>
+              <tr>
+                <td>John Doe</td>
+                <td>#102</td>
+                <td>Gokongwei Hall</td>
+                <td>GK-304B</td>
+                <td>B2</td>
+                <td>2026-02-13</td>
+                <td>09:00 - 09:30</td>
+                <td>Active</td>
+                <td><button class="remove-btn">Remove</button></td>
+              </tr>
+              <tr>
+                <td>Anonymous User</td>
+                <td>#103</td>
+                <td>Gokongwei Hall</td>
+                <td>GK-304B</td>
+                <td>C3</td>
+                <td>2026-02-13</td>
+                <td>09:00 - 09:30</td>
+                <td>Active</td>
+                <td><button class="remove-btn">Remove</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Modal for removal of reservation -->
+      <div id="modal" class="modal">
+        <div class="modal-content">
+          <h3>Remove Reservation</h3>
+          <p>Are you sure you want to remove this reservation?</p>
+          <div class="modal-buttons">
+            <button id="modal-cancel">Cancel</button>
+            <button id="modal-confirm">Remove</button>
+          </div>
+        </div>
+      </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="js/data.js"></script>
+        <script src="js/admin.js" defer></script>
+        
+    </main>
+  </div>
+
+</body>
+</html>
