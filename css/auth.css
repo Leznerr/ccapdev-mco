@@ -16,9 +16,9 @@ body {
     background-image: /* added gradient to bg-image */
         linear-gradient(to bottom, rgba(150, 144, 144, 0.4), rgba(17, 20, 21, 0.7)),
         url("../assets/auth-bg.jpg");
-    background-size: cover;
+    background-size: cover 250%;
     background-attachment: fixed;
-    background-position: center;
+    background-position: right;
     background-repeat: no-repeat;
     color: #495057; 
     line-height: 1.6;
@@ -31,12 +31,20 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
+    column-gap: 5cm;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+    min-height: 560px;
+    text-align: left;
 }
 
 .auth-form {
     width: 400px;
     background-color: var(--light-grey);
-    padding: 90px 60px;
+    padding: 50px 60px;
     border-radius: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: absolute;
@@ -45,11 +53,13 @@ body {
 
 }
 
-.left-container .auth-form {
+.left-container{
+    padding-left: 70px;
     left: 200px;
 }
 
-.right-container .auth-form {
+.right-container{
+    padding-right: 70px;
     right: 200px;
 }
 
@@ -57,25 +67,46 @@ body {
    2a. HEADER TEXT ELEMENTS
    ========================================= */
 
+.header-text h1 {
+    margin-top: auto;
+    font-size: 55px;
+    line-height: 0.9;
+    color: var(--white);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    margin-bottom: 0.1em;
+}
 
-   
+.accent {
+    color: var(--dlsu-accent);
+}
+
+.subtext {
+    font-size: 20px;
+    font-weight: 70;
+    color: var(--white);
+    margin-top: 10px;
+    line-height: 1.2;
+}
+
+
+
 /* =========================================
    2b. AUTH FORM ELEMENTS
    ========================================= */
 
-.auth-form h1 {
+.auth-form h2 {
     font-weight: normal;
-    font-size: 2.3rem;
+    font-size: 2.5rem;
     align-self: center;
     margin-top: 0;
-    margin-bottom: 45px;
+    margin-bottom: 20px;
     color: var(--dark);
     place-self: center;
 }
 
 .auth-form hr {
     margin-top: 30px;
-    margin-bottom: 30px;
+    margin-bottom: 45px;
     border: none;
     border-top: 1px solid var(--dark-grey);
 }
@@ -133,4 +164,9 @@ input[type=submit] {
     color: white;
     border: none;
     cursor: pointer;
+}
+
+a {
+    color: var(--dlsu-green);
+    text-decoration: none;
 }
