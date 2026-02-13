@@ -1,6 +1,88 @@
 <!DOCTYPE html>
 <html>
     <head>
+       <title>Sign Up - AnimoLabs</title> 
+        
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+       <link rel="stylesheet" type="text/css" media="all" href="css/common.css"> 
+       <link rel="stylesheet" type="text/css" media="all" href="css/auth.css"> 
+    </head>
+
+    <body>
+    <div class="container">
+        <div class="left-container">
+            <div class="auth-form">
+                <h2>Create Account</h2>
+                <hr>
+                <form method="post"> <!-- action = ? -->
+
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-id-badge"></i>
+                        <div class="name-field">
+                            <input type="text" id="first-name" name="first-name" placeholder="First Name">
+                            <input type="text" id="last-name" name="last-name" placeholder="Last Name">
+                        </div>
+                </div>
+                
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="Email">
+                </div>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Password">
+                </div>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-key"></i>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password">
+                </div>
+                <div class="input-wrapper">
+                    <label for="type">I am a ...</label>
+                    <select id="type" name="type" placeholder="Student/Lab Technician">
+                        <option value="student">Student</option>
+                        <option value="lab-technician">Lab Technician</option>
+                    </select>
+                </div>
+                        <input type="submit" value="Sign Up">
+                </form>
+
+                <!--                <form method="post">
+                    <div id="name-field">
+                        <input type="text" id="first-name" name="first-name" placeholder="First Name">
+                        <input type="text" id="last-name" name="last-name" placeholder="Last Name">
+                    </div>
+                    <input type="email" id="email" name="email" placeholder="Email">
+                    <input type="password" id="password" name="password" placeholder="Password">
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password">
+                    <label for="type">I am a ...</label>
+                        <select id="type" name="type" placeholder="Student/Lab Technician">
+                            <option value="student">Student</option>
+                            <option value="lab-technician">Lab Technician</option>
+                        </select>
+                    <input type="submit" value="Sign Up">
+                </form>-->
+
+
+
+                <hr> 
+                <p>Already have an account? <a href="/login.html">Login Here</a></p>
+            </div>
+        </div>
+
+        <div class="right-container">
+            <div class="header-text">
+                <span class="subtext">just three steps:</span>
+                <h1>Register <br> <span class="accent">Login</span> <br>Reserve</h1>
+            </div>    
+        </div>
+    </div>
+    </body>
+</html>
+
+
+<!--<!DOCTYPE html>
+<html>
+    <head>
        <title>Register - AnimoLabs</title>
 
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -18,7 +100,7 @@
             <div class="auth-form">
                 <h1>Create Account</h1>
                 <hr>
-                <form method="post"> <!-- action = ?-->
+                <form method="post">
                     <div id="name-field">
                         <input type="text" id="first-name" name="first-name" placeholder="First Name">
                         <input type="text" id="last-name" name="last-name" placeholder="Last Name">
@@ -40,4 +122,4 @@
         </div>
     </div>
     </body>
-</html>
+</html> -->
