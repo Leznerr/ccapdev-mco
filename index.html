@@ -1,71 +1,116 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - ArcherLabs</title>
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
-    <nav class="navbar">
+  <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
-                <span>AnimoLabs</span>
+                <span>ArcherLabs</span>
             </a>
-
+            
             <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html" class="nav-link active">Home</a></li>
                 <li><a href="profile.html" class="nav-link">Profile</a></li>
-                <li><a href="view-lab.html" class="nav-link active">Reserve a Lab</a></li>
+                <li><a href="view-lab.html" class="nav-link">Reserve a Lab</a></li>
+                <li><a href="admin-dashboard.html" class="nav-link">Admin-dashboard</a></li>
             </ul>
 
             <div class="nav-user-area">
-                
-                <a href="login.html" id="btn-login-nav" class="btn-login-nav" style="display: none;">
-                    Login
-                </a>
-
-                <div class="menu-toggle" id="mobile-menu">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
+                <a href="#" id="btn-logout-nav" class="btn-login-nav" style="background: transparent; color: white; border: 1px solid white;">Logout</a>
             </div>
+            
         </div>
     </nav>
 
-    <div class="container">
-        <div class="content">
-            <p>Select Building</p>
-            <select id="building-selector">
-                <option value="">Choose Building</option>
-                <option value="GK">Gokongwei Hall</option>
-                <option value="AG">Andrew Gonzales Hall</option>
-                <option value="VL">Velasco Hall</option>
-                <option value="SJ">St. Joseph Hall</option>
-            </select>
-        </div>
-
-        <div class="content" id="available-slots">
-            <p>Available Slots</p>
-
-            <div class="inner" id="lab">
-                Placeholder Room
+    <main class="home-wrapper">
+        <header class="hero-section">
+            <div class="hero-text">
+                <h1>Academic Success Starts with a Seat</h1>
+                <p>Search and reserve available slots across all labs for the next 7 days.</p>
             </div>
-        </div>
 
-<!--
-        <div class="content" id="reservations">
-            <p>Current Reservations</p>
+            <div class="glass-card search-hero-card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-search"></i> Find a Free Slot</h3>
+                </div>
+                
+                <div class="search-form-grid">
+                    <div class="input-group">
+                        <label>Building</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-building"></i>
+                            <select id="home-building-selector">
+                                <option value="" disabled selected>Select Building...</option>
+                            </select>
+                        </div>
+                    </div>
 
-            <div class="inner">
+                    <div class="input-group">
+                        <label>Laboratory</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-desktop"></i>
+                            <select id="home-lab-selector" disabled>
+                                <option value="" disabled selected>Select Lab...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Date</label>
+                        <div class="input-wrapper">
+                            <i class="far fa-calendar-alt"></i>
+                            <input type="date" id="home-date-selector">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Time Slot</label>
+                        <div class="input-wrapper">
+                            <i class="far fa-clock"></i>
+                            <select id="home-time-selector"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="availability-result" class="result-box" style="display: none;">
+                    <div class="result-content">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong id="available-count">0</strong> seats available in <span id="target-lab-name">...</span>
+                        </div>
+                    </div>
+                    <button id="btn-go-to-lab" class="btn-primary">Reserve Now</button>
+                </div>
+
+                <button id="btn-check-availability" class="btn-primary-home">Check Availability</button>
             </div>
-        </div>
--->
-        <div class="button" id="find-slots-btn">
-            <button type="submit" id="find-slots">Find Slots</button>
-            <p id="error-msg"></p>
-        </div>
+        </header>
 
-    </div>
+        <section class="quick-nav-grid">
+            <div class="nav-item glass-card" onclick="window.location.href='view-lab.html'">
+                <div class="nav-icon"><i class="fas fa-map-location-dot"></i></div>
+                <h3>Interactive Map</h3>
+                <p>Browse laboratory layouts and select specific seat positions.</p>
+            </div>
 
+            <div class="nav-item glass-card" onclick="window.location.href='profile.html'">
+                <div class="nav-icon"><i class="fas fa-user-gear"></i></div>
+                <h3>My Profile</h3>
+                <p>Manage your account and review your active lab bookings.</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/data.js"></script>
     <script src="js/home.js"></script>
-
 </body>
 </html>

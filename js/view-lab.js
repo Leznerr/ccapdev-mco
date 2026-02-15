@@ -121,4 +121,34 @@ $(document).ready(function() {
     });
 
     $('#btn-finish').click(() => $('#success-modal').fadeOut());
+
+    const savedLab = sessionStorage.getItem('homeSearchLab');
+    const savedDate = sessionStorage.getItem('homeSearchDate');
+    const savedTime = sessionStorage.getItem('homeSearchTime');
+
+    if (savedLab && savedDate && savedTime) {
+        const labObj = labs.find(l => l.id === savedLab);
+        
+        if (labObj) {
+            // 1. Auto-select Building
+            $bldgSelect.val(labObj.buildingId).trigger('change');
+            
+            // 2. Auto-select Lab (Reveals map)
+            $labSelect.val(savedLab).trigger('change');
+            
+            // 3. Auto-set Date
+            $date.val(savedDate).trigger('change');
+            
+            // 4. Auto-check the correct Time Slot
+            // We use a tiny timeout to ensure the DOM has finished generating the checkboxes
+            setTimeout(() => {
+                $(`input.time-slot-checkbox[value="${savedTime}"]`).prop('checked', true).trigger('change');
+            }, 50);
+        }
+
+        // Clean up memory so it doesn't auto-fill on standard visits
+        sessionStorage.removeItem('homeSearchLab');
+        sessionStorage.removeItem('homeSearchDate');
+        sessionStorage.removeItem('homeSearchTime');
+    }
 });
