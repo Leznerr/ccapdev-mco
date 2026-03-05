@@ -35,17 +35,17 @@
     <aside class="admin-sidebar role-hidden">
         <h2 class="sidebar-brand">ArcherLabs</h2>
         <nav class="sidebar-nav">
-            <a href="admin-dashboard.html" class="sidebar-link active">
+            <a href="admin-dashboard.html#overview" class="sidebar-link active">
                 <i class="fa-solid fa-house"></i>
                 <span>Dashboard</span>
             </a>
 
-            <a href="admin-dashboard.html" class="sidebar-link">
+            <a href="admin-dashboard.html#reservations" class="sidebar-link">
                 <i class="fa-solid fa-calendar"></i>
                 <span>Reservations</span>
             </a>
 
-            <a href="admin-dashboard.html" class="sidebar-link">
+            <a href="admin-dashboard.html#laboratories" class="sidebar-link">
                 <i class="fa-solid fa-desktop"></i>
                 <span>Laboratories</span>
             </a>
@@ -108,6 +108,17 @@
                         <input type="date" id="date-selector" class="custom-input">
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="input-label">Search User</label>
+                    <div class="user-search-row">
+                        <div class="input-wrapper">
+                            <i class="fas fa-user icon"></i>
+                            <input type="text" id="user-search-query" class="custom-input" placeholder="Username, name, or email">
+                        </div>
+                        <button type="button" id="btn-user-search" class="btn-secondary">Find</button>
+                    </div>
+                </div>
             </div>
 
             <div class="glass-card confirm-card locked-element" id="confirm-card">
@@ -125,6 +136,14 @@
                         <div id="tech-context" class="tech-alert" style="display: none;">
                             <i class="fas fa-user-check"></i> 
                             Reserving for walk-in: <strong id="walkin-display-name">...</strong>
+                        </div>
+
+                        <div id="tech-walkin-controls" style="display: none;">
+                            <label class="input-label" for="walkin-target-input">Walk-in Student</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user icon"></i>
+                                <input type="text" id="walkin-target-input" class="custom-input" placeholder="Username, email, full name, or walk-in name">
+                            </div>
                         </div>
 
                         <label class="checkbox-wrapper" id="student-controls">

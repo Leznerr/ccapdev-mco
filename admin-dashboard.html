@@ -22,17 +22,17 @@
   <aside class="admin-sidebar role-hidden">
     <h2 class="sidebar-brand">ArcherLabs</h2>
     <nav class="sidebar-nav">
-      <a href="admin-dashboard.html" class="sidebar-link active">
+      <a href="admin-dashboard.html#overview" class="sidebar-link active">
         <i class="fa-solid fa-house"></i>
         <span>Dashboard</span>
       </a>
 
-      <a href="admin-dashboard.html" class="sidebar-link">
+      <a href="admin-dashboard.html#reservations" class="sidebar-link">
         <i class="fa-solid fa-calendar"></i>
         <span>Reservations</span>
       </a>
 
-      <a href="admin-dashboard.html" class="sidebar-link">
+      <a href="admin-dashboard.html#laboratories" class="sidebar-link">
         <i class="fa-solid fa-desktop"></i>
         <span>Laboratories</span>
       </a>
@@ -55,7 +55,7 @@
   </aside>
 
   <main class="main-content">
-    <div class="row">
+    <div class="row" id="overview">
       <div class="column">
         <div class="card card-bg card-1">
           <p>23 bookings</p>
@@ -85,7 +85,7 @@
       </div>
     </div>
 
-    <section class="reservation-section">
+    <section class="reservation-section" id="laboratories">
       <div class="reservations">
         <h2>Reservations Today</h2>
         <div class="graph">
@@ -143,7 +143,7 @@
       </div>
     </section>
 
-    <section class="reservations">
+    <section class="reservations" id="reservations">
       <h2>Active Reservations</h2>
       <div class="table-container">
         <table>
@@ -161,39 +161,6 @@
             </tr>
           </thead>
           <tbody id="reservations-tbody">
-            <tr>
-              <td>Renzel Eleydo</td>
-              <td>#101</td>
-              <td>Gokongwei Hall</td>
-              <td>GK-304B</td>
-              <td>A1</td>
-              <td>2026-02-13</td>
-              <td>09:00 - 09:30</td>
-              <td>Active</td>
-              <td><button class="remove-btn">Remove</button></td>
-            </tr>
-            <tr>
-              <td>John Doe</td>
-              <td>#102</td>
-              <td>Gokongwei Hall</td>
-              <td>GK-304B</td>
-              <td>B2</td>
-              <td>2026-02-13</td>
-              <td>09:00 - 09:30</td>
-              <td>Active</td>
-              <td><button class="remove-btn">Remove</button></td>
-            </tr>
-            <tr>
-              <td>Anonymous User</td>
-              <td>#103</td>
-              <td>Gokongwei Hall</td>
-              <td>GK-304B</td>
-              <td>C3</td>
-              <td>2026-02-13</td>
-              <td>09:00 - 09:30</td>
-              <td>Active</td>
-              <td><button class="remove-btn">Remove</button></td>
-            </tr>
           </tbody>
         </table>
       </div>

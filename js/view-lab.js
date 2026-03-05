@@ -2,7 +2,7 @@
 $(document).ready(function() {
     // --- State & Selectors ---
     let selectedSeat = null;
-    let walkInName = "Walk-in Student";
+    let walkInTarget = null;
     const isTech = currentUser?.role === "Lab Technician";
 
     const $bldgSelect = $('#building-selector'), $labSelect = $('#lab-selector'), $date = $('#date-selector');
@@ -11,6 +11,36 @@ $(document).ready(function() {
 
     // --- Helpers ---
     const getSelectedTimes = () => $('.time-slot-checkbox:checked').map((_, el) => el.value).get();
+    const findUserByQuery = query => {
+        const needle = String(query || "").trim().toLowerCase();
+        if (!needle || typeof users === "undefined") return null;
+        const fullNameOf = user => `${user.firstName} ${user.lastName}`.toLowerCase();
+        return users.find(user =>
+            user.username.toLowerCase() === needle ||
+            user.email.toLowerCase() === needle ||
+            fullNameOf(user) === needle
+        ) || users.find(user =>
+            user.username.toLowerCase().includes(needle) ||
+            user.email.toLowerCase().includes(needle) ||
+            fullNameOf(user).includes(needle)
+        ) || null;
+    };
+    const syncReservationsFromStorage = () => {
+        if (typeof localStorage === "undefined" || typeof STORAGE_RESERVATIONS_KEY === "undefined") return;
+        try {
+            const stored = JSON.parse(localStorage.getItem(STORAGE_RESERVATIONS_KEY) || "null");
+            if (!Array.isArray(stored) || !Array.isArray(reservations)) return;
+            reservations.length = 0;
+            stored.forEach((entry, index) => {
+                const normalized = (typeof normalizeReservation === "function")
+                    ? normalizeReservation(entry, index)
+                    : entry;
+                reservations.push(normalized);
+            });
+        } catch (err) {
+            // Ignore malformed local data and continue using in-memory state.
+        }
+    };
     const toggleLocks = (locked) => $lockedCards.toggleClass('locked-element', locked).toggleClass('unlocked-element', !locked);
     const updateUI = () => {
         $seatDisplay.text(selectedSeat || 'None').toggleClass('active', !!selectedSeat);
@@ -18,17 +48,54 @@ $(document).ready(function() {
             $btnReserve.prop('disabled', false);
             return;
         }
+        if (isTech) {
+            $btnReserve.prop('disabled', !(selectedSeat && getSelectedTimes().length && walkInTarget));
+            return;
+        }
         $btnReserve.prop('disabled', !(selectedSeat && getSelectedTimes().length));
+    };
+    const refreshWalkInTarget = () => {
+        if (!isTech) return;
+        const raw = $('#walkin-target-input').val().trim();
+        if (!raw) {
+            walkInTarget = null;
+            $('#walkin-display-name').text('Not set');
+            updateUI();
+            return;
+        }
+        const matched = findUserByQuery(raw);
+        if (matched) {
+            walkInTarget = {
+                reserver: `${matched.username} (walk-in)`,
+                reservedForUsername: matched.username,
+                profileUsername: matched.username,
+                displayName: `${matched.username} (walk-in)`
+            };
+        } else {
+            walkInTarget = {
+                reserver: `${raw} (walk-in)`,
+                reservedForUsername: null,
+                profileUsername: null,
+                displayName: `${raw} (walk-in)`
+            };
+        }
+        $('#walkin-display-name').text(walkInTarget.displayName);
+        updateUI();
     };
 
     // --- 1. Initialization ---
-    const timeSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"];
+    const timeRanges = [
+        ["09:00", "09:30"], ["09:30", "10:00"], ["10:00", "10:30"], ["10:30", "11:00"],
+        ["11:00", "11:30"], ["11:30", "12:00"], ["13:00", "13:30"], ["13:30", "14:00"],
+        ["14:00", "14:30"], ["14:30", "15:00"], ["15:00", "15:30"], ["15:30", "16:00"],
+        ["16:00", "16:30"], ["16:30", "17:00"], ["17:00", "17:30"], ["17:30", "18:00"]
+    ];
     const formatTime = t => { let [h, m] = t.split(':'); return `${h % 12 || 12}:${m} ${h >= 12 ? 'PM' : 'AM'}`; };
 
-    timeSlots.forEach((start, i) => {
-        if (i === timeSlots.length - 1) return;
-        const val = `${start} - ${timeSlots[i + 1]}`, id = `time-${i}`;
-        $('#time-slots-grid').append(`<div class="time-slot-option"><input type="checkbox" id="${id}" value="${val}" class="time-slot-checkbox"><label for="${id}" class="time-slot-label">${formatTime(start)} - ${formatTime(timeSlots[i + 1])}</label></div>`);
+    timeRanges.forEach(([start, end], i) => {
+        const val = `${start} - ${end}`;
+        const id = `time-${i}`;
+        $('#time-slots-grid').append(`<div class="time-slot-option"><input type="checkbox" id="${id}" value="${val}" class="time-slot-checkbox"><label for="${id}" class="time-slot-label">${formatTime(start)} - ${formatTime(end)}</label></div>`);
     });
 
     buildings.forEach(b => $bldgSelect.append(new Option(b.name, b.id)));
@@ -38,9 +105,11 @@ $(document).ready(function() {
     $date.attr({ min: f(d), max: f(new Date(d.setDate(d.getDate() + 6))) }).val(f(new Date()));
 
     if (isTech) {
-        walkInName = sessionStorage.getItem('currentWalkIn') || walkInName;
-        $('#tech-context').show(); $('#walkin-display-name').text(walkInName);
-        $('#student-controls').hide(); $btnReserve.text("Confirm Walk-in");
+        $('#tech-context, #tech-walkin-controls').show();
+        $('#walkin-display-name').text('Not set');
+        $('#student-controls').hide();
+        $btnReserve.text("Confirm Walk-in");
+        $('#walkin-target-input').on('input blur', refreshWalkInTarget);
     } else if (!currentUser) {
         $btnReserve.text("Login to Reserve").prop('disabled', false); $('#student-controls').hide();
     }
@@ -70,10 +139,11 @@ $(document).ready(function() {
 
     // --- 3. Map Rendering ---
     function renderSeats() {
+        syncReservationsFromStorage();
         $seatGrid.empty().append('<div></div>').append([1,2,3,4,5].map(c => `<div class="grid-label">${c}</div>`));
-        const occupied = new Map(), selTimes = getSelectedTimes();
+        const occupied = new Map(), selTimes = getSelectedTimes(), hasTimeFilter = selTimes.length > 0;
         
-        reservations.filter(r => r.lab === $labSelect.val() && r.date === $date.val() && r.status === "Active" && selTimes.includes(r.time))
+        reservations.filter(r => r.lab === $labSelect.val() && r.date === $date.val() && r.status === "Active" && (hasTimeFilter ? selTimes.includes(r.time) : true))
                     .forEach(r => occupied.set(r.seat, r));
 
         if (selectedSeat && occupied.has(selectedSeat)) selectedSeat = null;
@@ -85,11 +155,22 @@ $(document).ready(function() {
                 const id = `${row}${col}`, res = occupied.get(id), $s = $(`<div class="seat">${id}</div>`);
                 
                 if (res) {
-                    if (currentUser && res.reserver === currentUser.username) {
+                    const isOwnedByCurrentUser = !!currentUser && (
+                        res.reserver === currentUser.username ||
+                        res.reservedForUsername === currentUser.username
+                    );
+                    if (isOwnedByCurrentUser) {
                         $s.addClass('user-owned').append(`<span class="tooltip-text">Your Booking</span>`);
                     } else {
                         $s.addClass('occupied').append(res.isAnonymous ? `<span class="tooltip-text">Occupied (Anon)</span>` : `<span class="tooltip-text">Reserved by: <br><span class="tooltip-user-link">${res.reserver}</span></span>`);
-                        if (!res.isAnonymous) $s.css('cursor', 'pointer').click(() => window.location.href = `profile.html?user=${encodeURIComponent(res.reserver)}`);
+                        if (!res.isAnonymous) {
+                            const profileUsername = res.profileUsername || res.reservedForUsername || (
+                                typeof users !== "undefined" && users.some(user => user.username === res.reserver) ? res.reserver : null
+                            );
+                            if (profileUsername) {
+                                $s.css('cursor', 'pointer').click(() => window.location.href = `profile.html?user=${encodeURIComponent(profileUsername)}`);
+                            }
+                        }
                     }
                 } else {
                     $s.attr('title', 'Available').toggleClass('selected', selectedSeat === id).click(function() {
@@ -103,6 +184,13 @@ $(document).ready(function() {
     }
 
     setInterval(() => $labSelect.val() && renderSeats(), 10000);
+    window.addEventListener('storage', function(e) {
+        if (e.key !== STORAGE_RESERVATIONS_KEY) return;
+        syncReservationsFromStorage();
+        if ($labSelect.val()) {
+            renderSeats();
+        }
+    });
 
     // --- 4. Submission ---
     $btnReserve.click(function() {
@@ -112,13 +200,47 @@ $(document).ready(function() {
             return;
         }
         const selTimes = getSelectedTimes();
+        if (!$labSelect.val()) {
+            alert("Please select a lab first.");
+            return;
+        }
+        if (!selectedSeat) {
+            alert("Please select a seat first.");
+            return;
+        }
+        if (!selTimes.length) {
+            alert("Please select at least one time slot.");
+            return;
+        }
+        if (isTech && !walkInTarget) {
+            alert("Please enter a walk-in student name first.");
+            return;
+        }
         
+        syncReservationsFromStorage();
         if (reservations.some(r => r.lab === $labSelect.val() && r.date === $date.val() && r.seat === selectedSeat && selTimes.includes(r.time) && r.status === "Active")) {
             alert(`Oops! Seat ${selectedSeat} was just taken.`); return renderSeats();
         }
 
         const groupId = Date.now(), isAnon = !isTech && $('#anon-check').is(':checked');
-        reservations.push(...selTimes.map((t, i) => ({ id: groupId + i, reservationGroupId: groupId, lab: $labSelect.val(), seat: selectedSeat, date: $date.val(), time: t, reserver: isTech ? walkInName : currentUser.username, status: "Active", isAnonymous: isAnon })));
+        const requestedAt = new Date().toISOString();
+        reservations.push(...selTimes.map((t, i) => ({
+            id: groupId + i,
+            reservationGroupId: groupId,
+            lab: $labSelect.val(),
+            seat: selectedSeat,
+            date: $date.val(),
+            time: t,
+            reserver: isTech ? walkInTarget.reserver : currentUser.username,
+            reservedForUsername: isTech ? walkInTarget.reservedForUsername : currentUser.username,
+            profileUsername: isTech ? walkInTarget.profileUsername : currentUser.username,
+            status: "Active",
+            isAnonymous: isAnon,
+            requestedAt
+        })));
+        if (typeof saveReservations === "function") {
+            saveReservations();
+        }
 
         $('#modal-ref-id').text(`#${groupId}`); $('#modal-slots-count').text(`${selTimes.length} slot(s) reserved`);
         $('#success-modal').fadeIn(300);
@@ -128,6 +250,23 @@ $(document).ready(function() {
     });
 
     $('#btn-finish').click(() => $('#success-modal').fadeOut());
+
+    $('#btn-user-search').click(function() {
+        const query = $('#user-search-query').val();
+        const foundUser = findUserByQuery(query || "");
+        if (!foundUser) {
+            alert("No matching user found.");
+            return;
+        }
+        window.location.href = `profile.html?user=${encodeURIComponent(foundUser.username)}`;
+    });
+
+    $('#user-search-query').on('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            $('#btn-user-search').trigger('click');
+        }
+    });
 
     const savedLab = sessionStorage.getItem('homeSearchLab');
     const savedDate = sessionStorage.getItem('homeSearchDate');

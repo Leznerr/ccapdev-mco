@@ -1,31 +1,65 @@
 /* file: js/profile.js */
 $(document).ready(function() {
 
-    // Prevent access if not logged in
-    if (typeof currentUser === 'undefined' || !currentUser) {
+    // --- 1. State & Setup ---
+    const authUser = (typeof currentUser !== 'undefined') ? currentUser : null;
+    let viewUser = null;
+    try { viewUser = new URLSearchParams(window.location.search).get('user'); } catch(e) {}
+
+    let targetUser = null;
+    if (viewUser && typeof users !== 'undefined') {
+        targetUser = users.find(u => u.username === viewUser) || null;
+        if (!targetUser) {
+            window.location.replace("index.html");
+            return;
+        }
+    } else if (authUser) {
+        targetUser = authUser;
+    }
+    if (!targetUser) {
         window.location.replace("index.html");
         return;
     }
 
-    // --- 1. State & Setup ---
-    const isTech = currentUser.role === "Lab Technician";
-    
-    // Safely figure out if we are viewing someone else's profile
-    let viewUser = null;
-    try { viewUser = new URLSearchParams(window.location.search).get('user'); } catch(e) {}
-    
-    let targetUser = currentUser;
-    if (viewUser && viewUser !== currentUser.username && typeof users !== 'undefined') {
-        const foundUser = users.find(u => u.username === viewUser);
-        if (foundUser) targetUser = foundUser;
-    }
-    const isViewMode = targetUser.username !== currentUser.username;
+    const isTech = !!authUser && authUser.role === "Lab Technician";
+    const isViewMode = !authUser || targetUser.username !== authUser.username;
     const editSlotStarts = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"];
     const toDisplayTime = t => {
         const [rawHour, rawMinute] = t.split(':').map(Number);
         const hour12 = rawHour % 12 || 12;
         const suffix = rawHour >= 12 ? 'PM' : 'AM';
         return `${String(hour12).padStart(2, '0')}:${String(rawMinute).padStart(2, '0')} ${suffix}`;
+    };
+    const groupKey = reservation => String(reservation.reservationGroupId || reservation.id);
+    const parseSlotStart = timeRange => {
+        const [h, m] = timeRange.split(" - ")[0].split(":").map(Number);
+        return (h * 60) + m;
+    };
+    const toDateTime = (date, timeRange) => {
+        const [start] = timeRange.split(" - ");
+        return new Date(`${date}T${start}:00`);
+    };
+    const formatDateTime = iso => {
+        const dt = new Date(iso);
+        if (Number.isNaN(dt.getTime())) return "N/A";
+        return dt.toLocaleString([], {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    };
+    const getGroupReservations = gId => reservations.filter(r => groupKey(r) === String(gId));
+    const getNoShowEligibleTime = gId => {
+        const group = getGroupReservations(gId).sort((a, b) => {
+            if (a.date !== b.date) return a.date.localeCompare(b.date);
+            return parseSlotStart(a.time) - parseSlotStart(b.time);
+        });
+        if (!group.length) return null;
+        const firstDateTime = toDateTime(group[0].date, group[0].time);
+        if (Number.isNaN(firstDateTime.getTime())) return null;
+        return new Date(firstDateTime.getTime() + (10 * 60 * 1000));
     };
 
     function initEditTimeSlotsGrid() {
@@ -52,6 +86,11 @@ $(document).ready(function() {
 
     // --- 2. Render Functions ---
     function updateNavbar() {
+        if (!authUser) {
+            $('#btn-login-nav').show();
+            $('#btn-logout-nav').hide();
+            return;
+        }
         $('#btn-login-nav').hide();
         $('#btn-logout-nav').show();
     }
@@ -65,7 +104,7 @@ $(document).ready(function() {
         $('#user-pic').attr('src', avatarUrl);
         
         if (isViewMode) {
-            $('title').text(`${user.firstName}'s Profile - AnimoLabs`);
+            $('title').text(`${user.firstName}'s Profile - ArcherLabs`);
         }
     }
 
@@ -75,13 +114,21 @@ $(document).ready(function() {
 
     // --- 3. Visibility Context ---
     if (isViewMode) {
-        $('#history, #btn-toggle-edit, #btn-delete-account').hide();
+        $('#btn-toggle-edit, #btn-delete-account').hide();
+        $('.content-header h1').text(`Public Reservations: ${targetUser.firstName} ${targetUser.lastName}`);
+        loadHistory();
     } else {
         if (isTech) {
             $('.content-header h1').text('No-Show Reservation Monitoring');
             $('.stat-label').text('Managed Reservations');
+            $('#btn-delete-account').hide();
         }
         loadHistory();
+    }
+
+    // Public profile mode (visitor) is read-only.
+    if (!authUser) {
+        return;
     }
 
     // --- 4. EXPLICIT EDIT PROFILE FLOW ---
@@ -121,6 +168,17 @@ $(document).ready(function() {
         currentUser.lastName = parts.length > 1 ? parts.slice(1).join(' ') : "";
         currentUser.bio = $('#edit-desc').val();
         currentUser.profilePic = $('#edit-pic').val().trim();
+        const userIndex = users.findIndex(u => u.username === currentUser.username);
+        if (userIndex !== -1) {
+            users[userIndex] = { ...users[userIndex], ...currentUser };
+        }
+        if (typeof saveUsers === "function") {
+            saveUsers();
+        }
+        if (typeof getAuthSession === "function" && typeof setAuthSession === "function") {
+            const auth = getAuthSession();
+            setAuthSession(currentUser, !!(auth && auth.remember));
+        }
         
         // Render new data and close form
         renderProfile(currentUser);
@@ -140,18 +198,38 @@ $(document).ready(function() {
     });
 
     $('#confirm-delete').off('click').on('click', function() {
-        alert("Account deleted successfully."); 
-        window.location.href = "login.html"; // Log them out natively
+        if (currentUser.role !== "Student") {
+            alert("Only student accounts can be deleted.");
+            return;
+        }
+
+        for (let i = users.length - 1; i >= 0; i--) {
+            if (users[i].username === currentUser.username) {
+                users.splice(i, 1);
+            }
+        }
+        for (let i = reservations.length - 1; i >= 0; i--) {
+            if (
+                reservations[i].reserver === currentUser.username ||
+                reservations[i].reservedForUsername === currentUser.username
+            ) {
+                reservations.splice(i, 1);
+            }
+        }
+
+        if (typeof saveUsers === "function") saveUsers();
+        if (typeof saveReservations === "function") saveReservations();
+        if (typeof clearAuthSession === "function") clearAuthSession();
+        $('#delete-account-modal').fadeOut(200);
+        currentUser = null;
+        alert("Account deleted successfully.");
+        window.location.replace("index.html");
     });
 
     // --- 6. Navbar Logout Flow ---
     $('#btn-logout-nav').off('click').on('click', function(e) {
         e.preventDefault(); 
-        if (typeof sessionStorage !== "undefined") {
-            sessionStorage.removeItem("currentUsername");
-            sessionStorage.removeItem("currentRole");
-            sessionStorage.removeItem("currentUser");
-        }
+        if (typeof clearAuthSession === "function") clearAuthSession();
         currentUser = null;
         window.location.href = "login.html";
     });
@@ -163,11 +241,21 @@ $(document).ready(function() {
         
         if (typeof reservations === 'undefined') return;
 
-        const myRes = isTech ? reservations.filter(r => r.status === "Active") : reservations.filter(r => r.reserver === currentUser.username);
+        const myRes = isViewMode
+            ? reservations.filter(r =>
+                r.status === "Active" &&
+                (r.reserver === targetUser.username || r.reservedForUsername === targetUser.username)
+            )
+            : (isTech
+                ? reservations.filter(r => r.status === "Active")
+                : reservations.filter(r =>
+                    r.reserver === currentUser.username ||
+                    r.reservedForUsername === currentUser.username
+                ));
         
         // Group consecutive reservations into one visual block
         const groups = Object.values(myRes.reduce((acc, res) => {
-            const id = res.reservationGroupId || res.id;
+            const id = groupKey(res);
             (acc[id] = acc[id] || []).push(res);
             return acc;
         }, {}));
@@ -177,28 +265,33 @@ $(document).ready(function() {
         $('#empty-state').toggle(groups.length === 0);
 
         groups.forEach(g => {
-            const r = g[0];
-            const timeDisplay = g.length > 1 ? `${g[0].time.split(' - ')[0]} - ${g[g.length - 1].time.split(' - ')[1]}` : r.time;
+            const sortedGroup = [...g].sort((a, b) => parseSlotStart(a.time) - parseSlotStart(b.time));
+            const r = sortedGroup[0];
+            const timeDisplay = sortedGroup.length > 1
+                ? `${sortedGroup[0].time.split(' - ')[0]} - ${sortedGroup[sortedGroup.length - 1].time.split(' - ')[1]}`
+                : r.time;
             const owner = isTech ? `<br><small style="color:#888; font-weight: normal;">By: ${r.reserver}</small>` : "";
             const statusClass = r.status === "Active" ? "status-active" : "status-completed";
+            const requestedLabel = formatDateTime(r.requestedAt);
             
             let actions = "";
-            if (r.status === "Active" && (isTech || r.reserver === currentUser.username)) {
+            if (!isViewMode && r.status === "Active" && (isTech || r.reserver === currentUser.username || r.reservedForUsername === currentUser.username)) {
                 actions += `<button class="btn-icon edit btn-edit-res" data-id="${r.id}" title="Edit"><i class="fas fa-pen"></i></button>`;
             }
 
-            if (isTech) {
+            if (!isViewMode && isTech) {
                 actions += `<button class="btn-icon delete btn-no-show" data-id="${r.id}" title="Remove No-show"><i class="fas fa-user-times"></i></button>`;
-            } else if (r.status === "Active") {
+            } else if (!isViewMode && r.status === "Active") {
                 actions += `<button class="btn-icon delete btn-delete" data-id="${r.id}" title="Cancel"><i class="fas fa-trash"></i></button>`;
             }
 
             $tbody.append(`<tr>
                 <td><strong>${r.lab}</strong>${owner}</td>
                 <td>
-                    ${r.date}<br><small style="color:#888; font-weight: 600;">${timeDisplay}</small>
+                    <div><strong style="font-size: 0.78rem;">Requested:</strong> <small style="color:#888; font-weight: 600;">${requestedLabel}</small></div>
+                    <div style="margin-top: 4px;"><strong style="font-size: 0.78rem;">Reserved:</strong> <small style="color:#888; font-weight: 600;">${r.date} ${timeDisplay}</small></div>
                 </td>
-                <td><span style="background: var(--gray-light); padding: 4px 10px; border-radius: 6px; font-weight: bold;">${r.seat}</span></td>
+                <td><span style="background: var(--color-bg); padding: 4px 10px; border-radius: 6px; font-weight: bold;">${r.seat}</span></td>
                 <td><span class="${statusClass}">${r.status}</span></td>
                 <td><div class="action-buttons">${actions || '<span style="color:#ccc;">-</span>'}</div></td>
             </tr>`);
@@ -218,8 +311,8 @@ $(document).ready(function() {
         const id = $(this).data('id');
         const target = reservations.find(r => r.id === id);
         if (!target) return;
-        const groupId = target.reservationGroupId || target.id;
-        const groupedSlots = reservations.filter(r => (r.reservationGroupId || r.id) === groupId);
+        const groupId = groupKey(target);
+        const groupedSlots = getGroupReservations(groupId);
         
         const d = new Date(), f = x => x.toISOString().split('T')[0];
         $('#edit-res-date').attr({ min: f(d), max: f(new Date(d.setDate(d.getDate() + 6))) });
@@ -237,7 +330,19 @@ $(document).ready(function() {
     });
 
     $('#history-table-body').off('click', '.btn-no-show').on('click', '.btn-no-show', function() {
-        if (confirm("Remove this no-show? Cancels all slots.")) removeReservationGroup($(this).data('id'));
+        const clickedId = $(this).data('id');
+        const target = reservations.find(r => r.id === clickedId);
+        if (!target) return;
+        const gId = groupKey(target);
+        const eligibleAt = getNoShowEligibleTime(gId);
+        if (!eligibleAt) return;
+
+        if (Date.now() < eligibleAt.getTime()) {
+            alert(`No-show removal is only allowed 10 minutes after start time.\nEligible at: ${formatDateTime(eligibleAt.toISOString())}`);
+            return;
+        }
+
+        if (confirm("Remove this no-show? Cancels all slots.")) removeReservationGroup(clickedId);
     });
 
     $('#history-table-body').off('click', '.btn-delete').on('click', '.btn-delete', function() {
@@ -247,11 +352,14 @@ $(document).ready(function() {
     function removeReservationGroup(id) {
         const target = reservations.find(r => r.id === id);
         if (!target) return;
-        const gId = target.reservationGroupId;
+        const gId = groupKey(target);
         for (let i = reservations.length - 1; i >= 0; i--) {
-            if (gId ? reservations[i].reservationGroupId === gId : reservations[i].id === target.id) {
+            if (groupKey(reservations[i]) === gId) {
                 reservations.splice(i, 1);
             }
+        }
+        if (typeof saveReservations === "function") {
+            saveReservations();
         }
         loadHistory();
     }
@@ -264,17 +372,33 @@ $(document).ready(function() {
     $('#save-edit-reservation').off('click').on('click', function() {
         const target = reservations.find(r => r.id === Number($('#edit-res-id').val()));
         if (!target) return alert("Cannot edit reservation.");
-        const groupId = $('#edit-reservation-modal').data('editGroupId') || target.reservationGroupId || target.id;
+        const groupId = String($('#edit-reservation-modal').data('editGroupId') || groupKey(target));
         const selectedTimes = $('#edit-time-slots-grid .time-slot-checkbox:checked').map((_, el) => el.value).get();
         if (!selectedTimes.length) return alert("Please select at least one time slot.");
 
         const updatedLab = $('#edit-res-lab').val();
         const updatedDate = $('#edit-res-date').val();
         const updatedSeat = $('#edit-res-seat').val();
+        if (!updatedLab || !updatedDate || !updatedSeat) {
+            alert("Please complete all reservation fields.");
+            return;
+        }
         const numericGroupId = Number(groupId);
+        const hasConflict = reservations.some(r =>
+            groupKey(r) !== groupId &&
+            r.status === "Active" &&
+            r.lab === updatedLab &&
+            r.date === updatedDate &&
+            r.seat === updatedSeat &&
+            selectedTimes.includes(r.time)
+        );
+        if (hasConflict) {
+            alert("Another reservation already exists for the selected lab/date/seat/time.");
+            return;
+        }
 
         for (let i = reservations.length - 1; i >= 0; i--) {
-            if ((reservations[i].reservationGroupId || reservations[i].id) === groupId) {
+            if (groupKey(reservations[i]) === groupId) {
                 reservations.splice(i, 1);
             }
         }
@@ -288,11 +412,17 @@ $(document).ready(function() {
                 date: updatedDate,
                 time,
                 reserver: target.reserver,
+                reservedForUsername: target.reservedForUsername,
+                profileUsername: target.profileUsername,
                 status: target.status || "Active",
-                isAnonymous: !!target.isAnonymous
+                isAnonymous: !!target.isAnonymous,
+                requestedAt: target.requestedAt || new Date().toISOString()
             });
         });
 
+        if (typeof saveReservations === "function") {
+            saveReservations();
+        }
         loadHistory();
         $('#edit-reservation-modal').fadeOut(200);
     });

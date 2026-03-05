@@ -5,8 +5,9 @@
    ========================================= */
 // email format
 function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const normalized = String(email || "").trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@dlsu\.edu\.ph$/;
+    return emailRegex.test(normalized);
 }
 
 // password strength
@@ -41,6 +42,7 @@ function handleLoginSubmit(e) {
     
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
+    const remember = document.getElementById('remember')?.checked || false;
     
     if (!email || !password) {
         alert('Please fill in all fields');
@@ -48,12 +50,12 @@ function handleLoginSubmit(e) {
     }
     
     if (!isValidEmail(email)) {
-        alert('Please enter a valid email');
+        alert('Please enter a valid DLSU email');
         return;
     }
     
     // simulate authentication
-    authenticateUser(email, password);
+    authenticateUser(email, password, remember);
 }
 
 // register form submission handler
@@ -73,7 +75,7 @@ function handleRegisterSubmit(e) {
     }
     
     if (!isValidEmail(email)) {
-        alert('Please enter a valid email');
+        alert('Please enter a valid DLSU email');
         return;
     }
     
@@ -84,6 +86,11 @@ function handleRegisterSubmit(e) {
     
     if (password !== confirmPassword) {
         alert('Passwords do not match');
+        return;
+    }
+
+    if (users.some(u => String(u.email).toLowerCase() === email.toLowerCase())) {
+        alert('This email is already registered. Please log in instead.');
         return;
     }
     
@@ -99,16 +106,20 @@ document.addEventListener('DOMContentLoaded', initializeFormHandlers);
    3. AUTHENTICATION FUNCTIONS
    ========================================= */
 // authentication logic
-function authenticateUser(email, password) {
+function authenticateUser(email, password, remember) {
     // check against users array from data.js
-    const user = users.find(u => u.email === email);
+    const normalizedEmail = email.toLowerCase();
+    const user = users.find(u => String(u.email).toLowerCase() === normalizedEmail);
     
     if (user) {
         if (password === user.password) {
-            // set logged-in user in sessionStorage (simulate login)
-            sessionStorage.setItem('currentUsername', user.username);
-            sessionStorage.setItem('currentRole', user.role);
-            sessionStorage.setItem('currentUser', JSON.stringify(user));
+            if (typeof setAuthSession === 'function') {
+                setAuthSession(user, remember);
+            } else {
+                sessionStorage.setItem('currentUsername', user.username);
+                sessionStorage.setItem('currentRole', user.role);
+                sessionStorage.setItem('currentUser', JSON.stringify(user));
+            }
             redirectToDashboard(user);
         } else {
             alert('Invalid password');
@@ -120,7 +131,33 @@ function authenticateUser(email, password) {
 
 // create new user to data.js (simulate registration)
 function createUser(firstName, lastName, email, password, type) {
-    // add new user to users array or send to server
+    const normalizedType = String(type || "").trim().toLowerCase();
+    const role = (normalizedType === "lab-technician" || normalizedType === "lab technician")
+        ? "Lab Technician"
+        : "Student";
+    const emailUser = email.split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g, "_");
+    let username = emailUser;
+    let counter = 1;
+    while (users.some(u => u.username === username)) {
+        counter += 1;
+        username = `${emailUser}_${counter}`;
+    }
+
+    const newUser = {
+        username,
+        role,
+        firstName,
+        lastName,
+        email: email.toLowerCase(),
+        bio: "New ArcherLabs user.",
+        profilePic: `https://ui-avatars.com/api/?name=${encodeURIComponent(`${firstName} ${lastName}`)}&background=387C44&color=fff&size=128`,
+        password
+    };
+
+    users.push(newUser);
+    if (typeof saveUsers === 'function') {
+        saveUsers();
+    }
     
     alert('Account created successfully! Please log in.');
     redirectToLogin();

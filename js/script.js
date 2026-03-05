@@ -23,7 +23,13 @@ $(document).ready(function() {
     }
 
     const currentPage = (window.location.pathname.split("/").pop() || "index.html").toLowerCase();
+    const currentHash = (window.location.hash || "").toLowerCase();
     const normalizeHref = (href) => ((href || "").split("?")[0].split("#")[0].split("/").pop() || "").toLowerCase();
+    const normalizeHash = (href) => {
+        const value = String(href || "");
+        const hashIndex = value.indexOf("#");
+        return hashIndex === -1 ? "" : value.slice(hashIndex).toLowerCase();
+    };
 
     // Keep top navbar underline in sync with selected page.
     const $topLinks = $(".nav-menu .nav-link");
@@ -40,10 +46,22 @@ $(document).ready(function() {
     $sidebarLinks.removeClass("active");
     let matchedSidebar = false;
     $sidebarLinks.each(function() {
-        if (!matchedSidebar && normalizeHref($(this).attr("href")) === currentPage) {
-            $(this).addClass("active");
-            matchedSidebar = true;
+        if (matchedSidebar) return;
+        const href = $(this).attr("href");
+        if (normalizeHref(href) !== currentPage) return;
+
+        if (currentPage === "admin-dashboard.html") {
+            const expectedHash = currentHash || "#overview";
+            const linkHash = normalizeHash(href) || "#overview";
+            if (linkHash === expectedHash) {
+                $(this).addClass("active");
+                matchedSidebar = true;
+            }
+            return;
         }
+
+        $(this).addClass("active");
+        matchedSidebar = true;
     });
 
     $(document).off("click", ".nav-menu .nav-link").on("click", ".nav-menu .nav-link", function() {
@@ -58,7 +76,9 @@ $(document).ready(function() {
 
     const handleLogout = function(e) {
         e.preventDefault();
-        if (typeof sessionStorage !== "undefined") {
+        if (typeof clearAuthSession === "function") {
+            clearAuthSession();
+        } else if (typeof sessionStorage !== "undefined") {
             sessionStorage.removeItem("currentUsername");
             sessionStorage.removeItem("currentRole");
             sessionStorage.removeItem("currentUser");
