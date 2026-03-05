@@ -1,37 +1,23 @@
 /* file: css/auth.css */
 
-/* --- 1. VARIABLES & BASE --- */
-/* (from common.css) */
-:root {
-    --dlsu-green: #387C44;  --dlsu-accent: #3FED87;
-    --white: #fff;          --dark: #2d3436;
-    --bg-color: #f0f2f5;    --light-grey: #D9D9D9;
-    --dark-grey: #969090;   --dlsu-green-light: #4CD137;
-}
-
 body {
-    margin: 0; 
     min-height: 100vh;
-    overflow: hidden; /* prevents bg to scroll*/
-    background-image: /* added gradient to bg-image */
-        linear-gradient(to bottom, rgba(150, 144, 144, 0.4), rgba(17, 20, 21, 0.7)),
+    overflow: auto;
+    background-image:
+        linear-gradient(to bottom, rgba(45, 52, 54, 0.28), rgba(45, 52, 54, 0.72)),
         url("../assets/auth-bg.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: right;
-
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    color: #495057; 
-    line-height: 1.6;
 }
 
-/* =========================================
-   1. LAYOUT
-   ========================================= */
-.container{
+.container {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+    gap: 24px;
+    padding: 24px;
     align-items: center;
     view-transition-name: auth-container;
 }
@@ -40,215 +26,163 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 800px;
+    min-height: 520px;
     gap: 10px;
     view-transition-name: header-text-content;
 }
 
-
 .auth-form {
-    width: 400px;
-    background-color: var(--light-grey);
-    padding: 20px 60px 20px 60px;
-    border-radius: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    width: min(460px, 100%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 32px 34px;
+    border-radius: 24px;
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    transform: none;
+    top: auto;
+    text-align: left;
     view-transition-name: auth-form-content;
 }
 
-.left-container{
-    padding-left: 150px;
+.left-container {
+    padding-left: 80px;
     text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-.right-container{
-    padding-right: 200px;
+.right-container {
+    padding-right: 80px;
     text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
-
-/* =========================================
-   2a. HEADER TEXT ELEMENTS
-   ========================================= */
 
 .header-text h1 {
     margin: 0;
     font-size: 55px;
     line-height: 0.9;
-    color: var(--white);
+    color: var(--color-surface);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    
 }
 
 .accent {
-    color: var(--dlsu-accent);
+    color: var(--color-accent);
 }
 
 .subtext {
     font-size: 20px;
-    font-weight: 70;
-    color: var(--white);
+    font-weight: 400;
+    color: var(--color-surface);
     margin: 0;
     line-height: 1.2;
 }
 
-
-
-/* =========================================
-   2b. AUTH FORM ELEMENTS
-   ========================================= */
-
 .auth-form h2 {
-    font-weight: normal;
+    font-weight: 500;
     font-size: 2.5rem;
-    align-self: center;
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: var(--dark);
-    place-self: center;
+    margin: 0 0 20px;
+    color: var(--color-text-main);
+    text-align: center;
 }
 
 .auth-form hr {
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin: 30px 0 20px;
     border: none;
-    border-top: 1px solid var(--dark-grey);
+    border-top: 1px solid rgba(45, 52, 54, 0.25);
 }
 
 .auth-form p {
-    align-self: center;
     margin-bottom: 30px;
-    color: var(--dark);
-    place-self: center;
+    color: var(--color-text-main);
+    text-align: center;
 }
 
-/* =========================================
-   3. INPUTS
-   ========================================= */
-/* base input styling */
-input{
-    width: 100%;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: white;
-    background-position: 10px 10px; 
-    background-repeat: no-repeat;
-    padding: 12px 20px 12px 40px;
-}
-
-.input-wrapper {
+.auth-form .input-wrapper {
     margin-top: 10px;
-    position: relative;
-    display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
-.input-wrapper i {
-    position: absolute;
-    left: 20px;
-    color: var(--dlsu-green);
+.auth-form .input-wrapper i {
+    left: 16px;
 }
 
-.input-wrapper input {
-    padding-left: 60px;
-}
-
-input[type=checkbox] {
-    width: 1.15em;
-    height: 1.15em;
-    margin-left: 1.1em;
+.auth-form .custom-input {
+    padding-left: 46px;
+    min-height: 48px;
 }
 
 .name-field {
     display: flex;
     gap: 10px;
     width: 100%;
+    padding-left: 40px;
 }
 
-.name-field input {
+.name-field .custom-input {
     flex: 1;
+    padding-left: 12px;
 }
 
-/* submit button and hyperlinks states *****************/
-input[type=submit] {
-    margin-top: 30px;
-    background-color: var(--dlsu-green);
-    color: white;
-    border: none;
-    cursor: pointer;
+.name-field .custom-input:first-child {
+    padding-left: 40px;
 }
 
-input[type=submit]:hover {
-    background-color: var(--dlsu-green-light);
-    box-shadow: 0 4px 10px rgba(76, 209, 55, 0.4);
-    transform: scale(1.03);
-
-    transition: all 0.3s ease;
-}
-
-a { /* hyperlinks */
-    color: var(--dlsu-green);
-    text-decoration: none;
-}
-
-a:hover {
-    color: var(--dlsu-green-light);
-    text-decoration: underline;
-}
-
-/* =========================================
-   4. DROPDOWN ELEMENTS & LABELS
-   ========================================= */
-
-#type { 
-    width: 70%;
-    padding: 12px 20px;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: white;
-    color: var(--dark);
-}
-
-#type option {
-    color: var(--dark-grey);
-    background-color: white;
+#type {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
 }
 
 label[for="type"] {
     font-size: 18px;
     font-weight: 500;
     display: block;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-left: 18.15px;
+    margin: 5px 0;
+    color: var(--color-text-main);
 }
 
-label[for="remember"] {
-    margin-right: 235px;
-    color: var(--dark);
+.remember-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    color: var(--color-text-main);
 }
 
+.remember-row input[type="checkbox"] {
+    width: 1.15em;
+    height: 1.15em;
+    margin: 0;
+}
 
-/* =========================================
-   5. INBETWEEN AUTH TRANSITION
-   ========================================= */
+.auth-form .btn-primary {
+    margin-top: 30px;
+    width: 100%;
+    min-height: 48px;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
 
 @view-transition {
     navigation: auto;
 }
 
-/* container morphs smoothly */
 ::view-transition-old(auth-container),
 ::view-transition-new(auth-container) {
     animation-duration: 1s;
 }
 
-/* content fades out quickly, then fades in */
 ::view-transition-old(auth-form-content),
 ::view-transition-old(header-text-content) {
     animation: fadeOutContent 0.4s ease-out forwards;
@@ -278,3 +212,26 @@ label[for="remember"] {
     }
 }
 
+@media (max-width: 1100px) {
+    .container {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+
+    .left-container,
+    .right-container {
+        padding: 0;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .auth-form {
+        margin: 0 auto;
+    }
+
+    .header-text {
+        min-height: auto;
+        align-items: center;
+        text-align: center;
+    }
+}

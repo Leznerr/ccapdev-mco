@@ -19,17 +19,53 @@
             
             <ul class="nav-menu">
                 <li><a href="index.html" class="nav-link active">Home</a></li>
-                <li><a href="profile.html" class="nav-link">Profile</a></li>
+                <li id="nav-profile"><a href="profile.html" class="nav-link">Profile</a></li>
                 <li><a href="view-lab.html" class="nav-link">Reserve a Lab</a></li>
-                <li><a href="admin-dashboard.html" class="nav-link">Admin-dashboard</a></li>
+                <li id="nav-admin"><a href="admin-dashboard.html" class="nav-link">Admin-dashboard</a></li>
             </ul>
 
             <div class="nav-user-area">
+                <a href="login.html" id="btn-login-nav" class="btn-primary" style="display: none;">Login</a>
                 <a href="#" id="btn-logout-nav" class="btn-login-nav" style="background: transparent; color: white; border: 1px solid white;">Logout</a>
             </div>
             
         </div>
     </nav>
+
+    <aside class="admin-sidebar role-hidden">
+        <h2 class="sidebar-brand">ArcherLabs</h2>
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="sidebar-link active">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="admin-dashboard.html" class="sidebar-link">
+                <i class="fa-solid fa-calendar"></i>
+                <span>Reservations</span>
+            </a>
+
+            <a href="admin-dashboard.html" class="sidebar-link">
+                <i class="fa-solid fa-desktop"></i>
+                <span>Laboratories</span>
+            </a>
+
+            <a href="view-lab.html" class="sidebar-link">
+                <i class="fa-solid fa-person-walking"></i>
+                <span>Walk-ins</span>
+            </a>
+
+            <a href="profile.html" class="sidebar-link">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </a>
+
+            <a href="login.html" class="sidebar-link logout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
 
     <main class="view-lab-container">
         

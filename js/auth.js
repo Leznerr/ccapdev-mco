@@ -106,8 +106,10 @@ function authenticateUser(email, password) {
     if (user) {
         if (password === user.password) {
             // set logged-in user in sessionStorage (simulate login)
+            sessionStorage.setItem('currentUsername', user.username);
+            sessionStorage.setItem('currentRole', user.role);
             sessionStorage.setItem('currentUser', JSON.stringify(user));
-            redirectToDashboard();
+            redirectToDashboard(user);
         } else {
             alert('Invalid password');
         }
@@ -125,8 +127,23 @@ function createUser(firstName, lastName, email, password, type) {
 }
 
 // on success
-function redirectToDashboard() {
-    window.location.href = 'admin-dashboard.html';
+function redirectToDashboard(user) {
+    if (!user) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    if (user.role === 'Lab Technician') {
+        window.location.href = 'admin-dashboard.html';
+        return;
+    }
+
+    if (user.role === 'Student') {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    window.location.href = 'index.html';
 }
 
 function redirectToLogin() {

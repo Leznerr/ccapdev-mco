@@ -21,25 +21,121 @@
 .hero-text h1 {
     font-size: 3rem;
     font-weight: 800;
-    color: #2d3436;
+    color: var(--color-text-main);
     margin-bottom: 10px;
     letter-spacing: -1px;
 }
 
 .hero-text p {
     font-size: 1.1rem;
-    color: #636e72;
+    color: var(--color-text-muted);
 }
 
-/* --- Search Card --- */
+.hero-cta-card {
+    width: 100%;
+    max-width: 760px;
+    text-align: center;
+}
+
+.hero-cta-card h2 {
+    margin: 0 0 10px;
+    font-size: 1.8rem;
+    color: var(--color-text-main);
+}
+
+.hero-cta-card p {
+    margin: 0 0 24px;
+    color: var(--color-text-muted);
+}
+
+.cta-reserve-btn {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 1.05rem;
+    padding: 16px 42px;
+}
+
+.info-section {
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
+    margin: 0 0 24px;
+    font-size: 1.4rem;
+    color: var(--color-text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header h2 i,
+.step-icon i,
+.guideline-card h3 i {
+    color: var(--color-primary);
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.step-card {
+    border: 1px solid rgba(45, 52, 54, 0.1);
+    border-radius: 14px;
+    padding: 26px 20px;
+    text-align: center;
+    background: rgba(56, 124, 68, 0.04);
+}
+
+.step-icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.step-card h3 {
+    margin: 0 0 8px;
+    color: var(--color-text-main);
+}
+
+.step-card p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+.guidelines-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+.guideline-card {
+    border: 1px solid rgba(45, 52, 54, 0.1);
+    border-radius: 14px;
+    padding: 24px 22px;
+    background: rgba(56, 124, 68, 0.04);
+}
+
+.guideline-card h3 {
+    margin: 0 0 10px;
+    color: var(--color-text-main);
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.guideline-card p {
+    margin: 8px 0 0;
+    color: var(--color-text-muted);
+}
+
+/* Legacy Home Search Section (kept for future fallback) */
 .search-hero-card {
     width: 100%;
     max-width: 850px;
     padding: 35px;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0,0,0,0.03);
 }
 
 .card-header {
@@ -50,14 +146,14 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: #2d3436;
+    color: var(--color-text-main);
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
 .card-title i {
-    color: var(--dlsu-green, #387C44);
+    color: var(--color-primary);
 }
 
 .search-form-grid {
@@ -72,47 +168,15 @@
     font-weight: 700;
     font-size: 0.85rem;
     margin-bottom: 8px;
-    color: #2d3436;
+    color: var(--color-text-main);
 }
 
-.input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-wrapper i {
-    position: absolute;
-    left: 15px;
-    color: var(--dlsu-green, #387C44);
-}
-
-.input-wrapper select, 
-.input-wrapper input {
-    width: 100%;
-    padding: 12px 15px 12px 40px;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s;
-    background: #fdfdfd;
-}
-
-.input-wrapper select:focus, 
-.input-wrapper input:focus {
-    border-color: var(--dlsu-accent, #4CD137);
-    background: white;
-}
-
-/* --- Buttons & Feedback --- */
 .btn-primary-home {
-    background: var(--dlsu-green, #387C44);
-    color: white;
+    background: var(--color-primary);
+    color: var(--color-surface);
     border: none;
     padding: 15px 40px;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
@@ -122,12 +186,12 @@
 }
 
 .btn-primary-home:hover {
-    background: #2d6336;
+    background: var(--color-primary-hover);
 }
 
 .result-box {
-    background: #f0f9f1;
-    border: 2px solid var(--dlsu-green, #387C44);
+    background: rgba(76, 209, 55, 0.12);
+    border: 2px solid var(--color-primary);
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -143,36 +207,24 @@
     gap: 15px;
 }
 
+.result-content i,
+.result-content strong {
+    color: var(--color-primary);
+}
+
 .result-content i {
     font-size: 1.5rem;
-    color: var(--dlsu-green, #387C44);
 }
 
 .result-content strong {
     font-size: 1.2rem;
-    color: var(--dlsu-green, #387C44);
 }
 
-.btn-primary {
-    background: var(--dlsu-green, #387C44);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-primary:hover {
-    background: #2d6336;
-}
-
-/* --- Quick Links Grid --- */
 .quick-nav-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
+    margin-bottom: 40px;
 }
 
 .nav-item {
@@ -180,38 +232,48 @@
     padding: 40px 30px;
     cursor: pointer;
     transition: 0.3s;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0,0,0,0.03);
 }
 
 .nav-item:hover {
     transform: translateY(-8px);
-    border-color: var(--dlsu-green, #387C44);
+    border-color: var(--color-primary);
 }
 
 .nav-icon {
     font-size: 2.5rem;
-    color: var(--dlsu-green, #387C44);
+    color: var(--color-primary);
     margin-bottom: 20px;
 }
 
 .nav-item h3 {
     margin-bottom: 10px;
-    color: #2d3436;
+    color: var(--color-text-main);
 }
 
 .nav-item p {
     font-size: 0.9rem;
-    color: #6c757d;
+    color: var(--color-text-muted);
 }
 
-@keyframes slideDown { 
-    from { opacity: 0; transform: translateY(-10px); } 
-    to { opacity: 1; transform: translateY(0); } 
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
-    .search-form-grid, .quick-nav-grid { grid-template-columns: 1fr; }
+    .search-form-grid,
+    .quick-nav-grid,
+    .steps-grid,
+    .guidelines-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-text h1 {
+        font-size: 2.2rem;
+    }
+
+    .hero-cta-card {
+        padding: 30px 22px;
+    }
 }
+

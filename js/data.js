@@ -169,9 +169,9 @@ const reservations = [
     }
 ];
 
-// Simulated session (just change the role to Student instead of Technician to switch modes):
+// Simulated session:
 // 1) use saved username/role if available
-// 2) fallback to a student account for default demo flow
+// 2) if not found, stay as null (Visitor mode)
 let currentUser = null;
 
 if (typeof sessionStorage !== "undefined") {
@@ -181,8 +181,4 @@ if (typeof sessionStorage !== "undefined") {
     currentUser =
         users.find(user => user.username === savedUsername) ||
         users.find(user => user.role === savedRole);
-}
-
-if (!currentUser) {
-    currentUser = users.find(user => user.role === "Student");
 }

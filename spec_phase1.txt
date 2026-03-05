@@ -1,0 +1,187 @@
+
+
+=== PAGE 1 ===
+CCAPDEV T1 AY2324 
+CCAPDEV Term 1, AY 2023 – 2024 
+Machine Project – Phase 1 
+ 
+Groupings: At most 4 members in a group 
+Percentage: 20% 
+ 
+Deliverables: 
+zip file containing all files for the machine project 
+ 
+Submission guidelines: Submit the zip file to AnimoSpace 
+Filename format:   CCAPDEV-Phase1-Group<#>.zip 
+ 
+SPECIFICATIONS 
+Your task is to create the front-end portion of your selected web application. 
+ 
+Phase 1 – Front-End Development 
+• For this phase, the group is required to develop the front -end vie w of their 
+selected web application using HTML, CSS, and JavaScript. 
+• Aside from base CSS and JavaScript, the group may also use interface libraries 
+like Bootstrap, meteor, and React, among others. 
+• All views by all users should be visible and navigable from the index webpage. 
+The group is required to implement the front -end view of all features described 
+in the project specifications document . The back -end logic of the minimum 
+features is not yet required to be implemented in this phase. 
+• Data may be hardcoded for now. There should be at least 5 sample data for each 
+applicable feature. Data encoded should be life -like, thus no lorem ipsum 
+generated paragraphs. For example, in a forum web application, there should be 
+at least 5 sample users,  5 sample posts, and 5 sample comments across the web 
+application. 
+• Students should collaborate through their group’s GitHub repository. The 
+repository will be used as reference in case problems arise with group 
+collaborations. 
+ 
+WORKING WITH GROUPMATES 
+For this project, you are encouraged to work in groups of at most 4 members. Make sure 
+that each member of the group has approximately the same amount of contribution for 
+the project. Problems with groupmates must be discussed internally within the group, 
+and if needed, with the lecturer. 
+
+=== PAGE 2 ===
+CCAPDEV T1 AY2324 
+RUBRIC FOR GRADING 
+Criteria Ratings Points 
+Project Goals 
+All views fulfill 
+the project 
+features stated in 
+the project 
+specifications 
+document. 
+EXCELLENT 
+20 pts 
+The group 
+completely 
+fulfilled the 
+project features 
+with 100% of the 
+views present. 
+VERY GOOD 
+15 pts 
+The group mostly 
+fulfilled the 
+project features 
+with 75% of the 
+views present. 
+GOOD 
+10 pts 
+The group 
+somewhat 
+fulfilled the 
+project features 
+with 50% of the 
+views present. 
+DEVELOPING 
+5 pts 
+The group only 
+fulfilled a part of 
+the project 
+features with 
+25% of the views 
+present. 
+NO MARKS 
+0 pts 
+The group did 
+not try to 
+complete the view 
+of the project 
+features at all. 
+20 pts 
+Navigation 
+All views are 
+eventually 
+navigable starting 
+from the index 
+page. 
+EXCELLENT 
+15 pts 
+All views are eventually 
+navigable starting from the 
+index page. 
+GOOD 
+7 pts 
+Not all views are navigable 
+from within the site. The user 
+has to access a page via its 
+URL. 
+NO MARKS 
+0 pts 
+Views are all accessed through 
+the file system. 
+15 pts 
+Visual Design 
+The view is 
+aligned with the 
+project features. 
+EXCELLENT 
+10 pts 
+The view is aligned with all 
+project features. All views 
+allow the user to use their 
+corresponding features easily. 
+GOOD 
+5 pts 
+The view is aligned with some 
+project features. Only some 
+views allow the user to use 
+their corresponding features 
+easily. 
+NO MARKS 
+0 pts 
+The view is not aligned with 
+any project features at all. 10 pts 
+Graphics 
+Graphics are 
+related to the 
+purpose of the 
+app. 
+EXCELLENT 
+10 pts 
+Appropriate graphics are used 
+when necessary. Icons are 
+easy to understand. If it is 
+difficult to understand, icons 
+GOOD 
+5 pts 
+Graphics are related to the 
+purpose of the app but are not 
+of good quality. 
+NO MARKS 
+0 pts 
+Graphics are not used, or only 
+made the user distracted. 
+10 pts 
+
+=== PAGE 3 ===
+CCAPDEV T1 AY2324 
+are accompanied by 
+supporting texts. 
+Content 
+Organization 
+Information 
+within the 
+application is 
+well-organized 
+and relevant to 
+the user. 
+EXCELLENT 
+20 pts 
+The group organized the 
+information according to the 
+project objectives. 
+GOOD 
+10 pts 
+The group made a minimum 
+effort to organize the 
+information according to the 
+project objectives. 
+NO MARKS 
+0 pts 
+The group did not organize the 
+information at all. 20 pts 
+Total points: 75 
+ 

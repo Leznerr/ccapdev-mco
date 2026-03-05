@@ -3,12 +3,12 @@ $(document).ready(function() {
 
     // Prevent access if not logged in
     if (typeof currentUser === 'undefined' || !currentUser) {
-        window.location.href = "login.html";
+        window.location.replace("index.html");
         return;
     }
 
     // --- 1. State & Setup ---
-    const isTech = currentUser.role === "Technician";
+    const isTech = currentUser.role === "Lab Technician";
     
     // Safely figure out if we are viewing someone else's profile
     let viewUser = null;
@@ -20,6 +20,35 @@ $(document).ready(function() {
         if (foundUser) targetUser = foundUser;
     }
     const isViewMode = targetUser.username !== currentUser.username;
+    const editSlotStarts = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"];
+    const toDisplayTime = t => {
+        const [rawHour, rawMinute] = t.split(':').map(Number);
+        const hour12 = rawHour % 12 || 12;
+        const suffix = rawHour >= 12 ? 'PM' : 'AM';
+        return `${String(hour12).padStart(2, '0')}:${String(rawMinute).padStart(2, '0')} ${suffix}`;
+    };
+
+    function initEditTimeSlotsGrid() {
+        const $grid = $('#edit-time-slots-grid');
+        if (!$grid.length || $grid.children().length) return;
+
+        editSlotStarts.forEach((start, index) => {
+            const [h, m] = start.split(':').map(Number);
+            const totalMinutes = (h * 60) + m + 30;
+            const endHour = Math.floor(totalMinutes / 60);
+            const endMinute = totalMinutes % 60;
+            const end = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
+            const value = `${start} - ${end}`;
+            const id = `edit-time-${index}`;
+
+            $grid.append(
+                `<div class="time-slot-option">
+                    <input type="checkbox" id="${id}" value="${value}" class="time-slot-checkbox">
+                    <label for="${id}" class="time-slot-label">${toDisplayTime(start)} - ${toDisplayTime(end)}</label>
+                </div>`
+            );
+        });
+    }
 
     // --- 2. Render Functions ---
     function updateNavbar() {
@@ -42,6 +71,7 @@ $(document).ready(function() {
 
     updateNavbar();
     renderProfile(targetUser);
+    initEditTimeSlotsGrid();
 
     // --- 3. Visibility Context ---
     if (isViewMode) {
@@ -117,7 +147,12 @@ $(document).ready(function() {
     // --- 6. Navbar Logout Flow ---
     $('#btn-logout-nav').off('click').on('click', function(e) {
         e.preventDefault(); 
-        currentUser = null; 
+        if (typeof sessionStorage !== "undefined") {
+            sessionStorage.removeItem("currentUsername");
+            sessionStorage.removeItem("currentRole");
+            sessionStorage.removeItem("currentUser");
+        }
+        currentUser = null;
         window.location.href = "login.html";
     });
 
@@ -183,6 +218,8 @@ $(document).ready(function() {
         const id = $(this).data('id');
         const target = reservations.find(r => r.id === id);
         if (!target) return;
+        const groupId = target.reservationGroupId || target.id;
+        const groupedSlots = reservations.filter(r => (r.reservationGroupId || r.id) === groupId);
         
         const d = new Date(), f = x => x.toISOString().split('T')[0];
         $('#edit-res-date').attr({ min: f(d), max: f(new Date(d.setDate(d.getDate() + 6))) });
@@ -190,8 +227,12 @@ $(document).ready(function() {
         $('#edit-res-id').val(target.id);
         $('#edit-res-lab').val(target.lab);
         $('#edit-res-date').val(target.date);
-        $('#edit-res-time').val(target.time);
         $('#edit-res-seat').val(target.seat);
+        $('#edit-time-slots-grid .time-slot-checkbox').prop('checked', false);
+        groupedSlots.forEach(slot => {
+            $('#edit-time-slots-grid .time-slot-checkbox').filter((_, el) => el.value === slot.time).prop('checked', true);
+        });
+        $('#edit-reservation-modal').data('editGroupId', groupId);
         $('#edit-reservation-modal').fadeIn(200);
     });
 
@@ -223,14 +264,37 @@ $(document).ready(function() {
     $('#save-edit-reservation').off('click').on('click', function() {
         const target = reservations.find(r => r.id === Number($('#edit-res-id').val()));
         if (!target) return alert("Cannot edit reservation.");
+        const groupId = $('#edit-reservation-modal').data('editGroupId') || target.reservationGroupId || target.id;
+        const selectedTimes = $('#edit-time-slots-grid .time-slot-checkbox:checked').map((_, el) => el.value).get();
+        if (!selectedTimes.length) return alert("Please select at least one time slot.");
 
-        target.lab = $('#edit-res-lab').val();
-        target.date = $('#edit-res-date').val();
-        target.time = $('#edit-res-time').val();
-        target.seat = $('#edit-res-seat').val();
-        
-        $('#edit-reservation-modal').fadeOut(200);
+        const updatedLab = $('#edit-res-lab').val();
+        const updatedDate = $('#edit-res-date').val();
+        const updatedSeat = $('#edit-res-seat').val();
+        const numericGroupId = Number(groupId);
+
+        for (let i = reservations.length - 1; i >= 0; i--) {
+            if ((reservations[i].reservationGroupId || reservations[i].id) === groupId) {
+                reservations.splice(i, 1);
+            }
+        }
+
+        selectedTimes.forEach((time, index) => {
+            reservations.push({
+                id: Number.isFinite(numericGroupId) ? numericGroupId + index : Date.now() + index,
+                reservationGroupId: groupId,
+                lab: updatedLab,
+                seat: updatedSeat,
+                date: updatedDate,
+                time,
+                reserver: target.reserver,
+                status: target.status || "Active",
+                isAnonymous: !!target.isAnonymous
+            });
+        });
+
         loadHistory();
+        $('#edit-reservation-modal').fadeOut(200);
     });
 
     $('#history-search').on('keyup', function() {

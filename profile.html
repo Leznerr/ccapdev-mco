@@ -19,17 +19,52 @@
             
             <ul class="nav-menu">
                 <li><a href="index.html" class="nav-link active">Home</a></li>
-                <li><a href="profile.html" class="nav-link">Profile</a></li>
+                <li id="nav-profile"><a href="profile.html" class="nav-link">Profile</a></li>
                 <li><a href="view-lab.html" class="nav-link">Reserve a Lab</a></li>
-                <li><a href="admin-dashboard.html" class="nav-link">Admin-dashboard</a></li>
             </ul>
 
             <div class="nav-user-area">
+                <a href="login.html" id="btn-login-nav" class="btn-primary" style="display: none;">Login</a>
                 <a href="#" id="btn-logout-nav" class="btn-login-nav" style="background: transparent; color: white; border: 1px solid white;">Logout</a>
             </div>
             
         </div>
     </nav>
+
+    <aside class="admin-sidebar role-hidden">
+        <h2 class="sidebar-brand">ArcherLabs</h2>
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html" class="sidebar-link active">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="admin-dashboard.html" class="sidebar-link">
+                <i class="fa-solid fa-calendar"></i>
+                <span>Reservations</span>
+            </a>
+
+            <a href="admin-dashboard.html" class="sidebar-link">
+                <i class="fa-solid fa-desktop"></i>
+                <span>Laboratories</span>
+            </a>
+
+            <a href="view-lab.html" class="sidebar-link">
+                <i class="fa-solid fa-person-walking"></i>
+                <span>Walk-ins</span>
+            </a>
+
+            <a href="profile.html" class="sidebar-link">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </a>
+
+            <a href="login.html" class="sidebar-link logout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
 
     <main class="profile-container">
         
@@ -161,25 +196,8 @@
                 </div>
 
                 <div class="form-group" style="margin-bottom: 5px;">
-                    <label class="input-label">Time Slot</label>
-                    <select id="edit-res-time" class="custom-select">
-                        <option value="09:00 - 09:30">09:00 AM - 09:30 AM</option>
-                        <option value="09:30 - 10:00">09:30 AM - 10:00 AM</option>
-                        <option value="10:00 - 10:30">10:00 AM - 10:30 AM</option>
-                        <option value="10:30 - 11:00">10:30 AM - 11:00 AM</option>
-                        <option value="11:00 - 11:30">11:00 AM - 11:30 AM</option>
-                        <option value="11:30 - 12:00">11:30 AM - 12:00 PM</option>
-                        <option value="13:00 - 13:30">01:00 PM - 01:30 PM</option>
-                        <option value="13:30 - 14:00">01:30 PM - 02:00 PM</option>
-                        <option value="14:00 - 14:30">02:00 PM - 02:30 PM</option>
-                        <option value="14:30 - 15:00">02:30 PM - 03:00 PM</option>
-                        <option value="15:00 - 15:30">03:00 PM - 03:30 PM</option>
-                        <option value="15:30 - 16:00">03:30 PM - 04:00 PM</option>
-                        <option value="16:00 - 16:30">04:00 PM - 04:30 PM</option>
-                        <option value="16:30 - 17:00">04:30 PM - 05:00 PM</option>
-                        <option value="17:00 - 17:30">05:00 PM - 05:30 PM</option>
-                        <option value="17:30 - 18:00">05:30 PM - 06:00 PM</option>
-                    </select>
+                    <label class="input-label">Time Slots</label>
+                    <div id="edit-time-slots-grid" class="chips-grid"></div>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 25px;">

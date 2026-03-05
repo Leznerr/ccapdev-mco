@@ -1,10 +1,9 @@
 /* file: js/view-lab.js */
 $(document).ready(function() {
-
     // --- State & Selectors ---
     let selectedSeat = null;
     let walkInName = "Walk-in Student";
-    const isTech = currentUser?.role === "Technician";
+    const isTech = currentUser?.role === "Lab Technician";
 
     const $bldgSelect = $('#building-selector'), $labSelect = $('#lab-selector'), $date = $('#date-selector');
     const $seatDisplay = $('#selected-seat-display'), $btnReserve = $('#btn-reserve'), $seatGrid = $('#seat-grid');
@@ -15,7 +14,11 @@ $(document).ready(function() {
     const toggleLocks = (locked) => $lockedCards.toggleClass('locked-element', locked).toggleClass('unlocked-element', !locked);
     const updateUI = () => {
         $seatDisplay.text(selectedSeat || 'None').toggleClass('active', !!selectedSeat);
-        $btnReserve.prop('disabled', !(currentUser && selectedSeat && getSelectedTimes().length));
+        if (!currentUser) {
+            $btnReserve.prop('disabled', false);
+            return;
+        }
+        $btnReserve.prop('disabled', !(selectedSeat && getSelectedTimes().length));
     };
 
     // --- 1. Initialization ---
@@ -39,7 +42,7 @@ $(document).ready(function() {
         $('#tech-context').show(); $('#walkin-display-name').text(walkInName);
         $('#student-controls').hide(); $btnReserve.text("Confirm Walk-in");
     } else if (!currentUser) {
-        $btnReserve.text("Login Required").prop('disabled', true); $('#student-controls').hide();
+        $btnReserve.text("Login to Reserve").prop('disabled', false); $('#student-controls').hide();
     }
 
     // --- 2. UI Flow Events ---
@@ -103,7 +106,11 @@ $(document).ready(function() {
 
     // --- 4. Submission ---
     $btnReserve.click(function() {
-        if (!currentUser) return window.location.href = "login.html";
+        if (!currentUser) {
+            alert("You must log in first before reserving a slot.");
+            window.location.href = "login.html";
+            return;
+        }
         const selTimes = getSelectedTimes();
         
         if (reservations.some(r => r.lab === $labSelect.val() && r.date === $date.val() && r.seat === selectedSeat && selTimes.includes(r.time) && r.status === "Active")) {

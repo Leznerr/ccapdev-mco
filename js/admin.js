@@ -1,3 +1,14 @@
+/* file: js/admin.js */
+(function() {
+  if (typeof currentUser === "undefined" || !currentUser) {
+    window.location.replace("index.html");
+    return;
+  }
+
+  if (currentUser.role !== "Lab Technician") {
+    window.location.replace("index.html");
+    return;
+  }
 
   const labCapacityData = {
     'GK-304B': 40,
@@ -7,14 +18,13 @@
     'VL-201': 30
   };
 
-  // forsubmission of lab form
   document.getElementById('lab-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const building = document.getElementById('lab-building').value;
     const room = document.getElementById('lab-room').value;
     const date = document.getElementById('lab-date').value;
     const time = document.getElementById('lab-time').value;
-    
+
     if (!building || !room || !date || !time) {
       alert('Please fill in all fields');
       return;
@@ -30,28 +40,23 @@
     document.getElementById('lab-info').style.display = 'block';
   });
 
-  // date constraints (7)
   const dateInput = document.getElementById('lab-date');
   const today = new Date();
   const nextWeek = new Date(today);
   nextWeek.setDate(today.getDate() + 6);
-  
+
   const formatDate = (date) => {
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, '0');
     const dd = String(date.getDate()).padStart(2, '0');
     return `${yyyy}-${mm}-${dd}`;
   };
-  
+
   dateInput.setAttribute('min', formatDate(today));
   dateInput.setAttribute('max', formatDate(nextWeek));
   dateInput.value = formatDate(today);
 
-
-
-  // chart initialize
-  document.addEventListener('DOMContentLoaded', function () {
-
+  document.addEventListener('DOMContentLoaded', function() {
     const chartA = document.getElementById('reservationsChart');
 
     if (chartA) {
@@ -81,13 +86,9 @@
           }
         }
       });
-
     }
-
   });
 
- 
-  // modal logic
   const modal = document.getElementById('modal');
   const modalCancel = document.getElementById('modal-cancel');
   const modalConfirm = document.getElementById('modal-confirm');
@@ -120,3 +121,5 @@
       currentRow = null;
     }
   });
+})();
+
