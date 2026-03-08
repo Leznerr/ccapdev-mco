@@ -1,0 +1,20 @@
+require("dotenv").config();
+
+const app = require("./src/app");
+const { connectDB } = require("./model/db");
+
+const PORT = Number(process.env.PORT) || 3000;
+
+async function startServer() {
+    try {
+        await connectDB();
+        app.listen(PORT, () => {
+            console.log(`ArcherLabs server running at http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.error("Failed to start server:", error.message);
+        process.exit(1);
+    }
+}
+
+startServer();
