@@ -1,0 +1,23 @@
+{
+  "name": "ccapdev-mco",
+  "version": "1.0.0",
+  "description": "ArcherLabs Lab Reservation System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node scripts/seed.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "hbs": "^4.2.0",
+    "method-override": "^3.0.0",
+    "mongoose": "^9.2.4",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
