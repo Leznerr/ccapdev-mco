@@ -12,29 +12,29 @@ router.get("/", (req, res) => {
 // GAB
 // ==========================================
 router.get("/login", (req, res) => {
-    res.render("login", { title: "Login - ArcherLabs" });
+    res.render("login", { title: "Login - ArcherLabs", pageCss: "auth.css"});
 });
 
 router.get("/register", (req, res) => {
-    res.render("register", { title: "Register - ArcherLabs" });
+    res.render("register", { title: "Register - ArcherLabs", pageCss: "auth.css"});
 });
 
 // ==========================================
 // RENZEL
 // ==========================================
 router.get("/view-lab", (req, res) => {
-    res.render("view-lab", { title: "Seat Map - ArcherLabs" });
+    res.render("view-lab", { title: "Seat Map - ArcherLabs", pageCss: "view-lab.css" });
 });
 
 router.get("/profile", (req, res) => {
-    res.render("profile", { title: "My Profile - ArcherLabs" });
+    res.render("profile", { title: "My Profile - ArcherLabs", pageCss: "profile.css" });
 });
 
 // ==========================================
 // ABIGAIL
 // ==========================================
 router.get("/admin-dashboard", (req, res) => {
-    res.render("admin-dashboard", { title: "Technician Dashboard - ArcherLabs" });
+    res.render("admin-dashboard", { title: "Technician Dashboard - ArcherLabs", pageCss: "admin-dashboard.css"});
 });
 
 module.exports = router;
