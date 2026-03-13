@@ -1,0 +1,253 @@
+{{> head title=title pageCss=pageCss}}
+
+  <div class="container">
+
+    <header id="main-header">
+      <h1 class="web-name">ArcherLabs</h1>
+    </header>
+
+    {{> adminSidebar}}
+
+    <main class="main-content">
+
+      <div class="row">
+        <div class="column">
+          <div class="card card-bg card-1">
+            <p>{{totalToday}} bookings</p>
+            <h3>Total Reservations Today</h3>
+          </div>
+        </div>
+        <div class="column">
+          <div class="card card-bg card-2">
+            <p>{{mostUsedLab}}</p>
+            <h3>Most Used Lab Today</h3>
+          </div>
+        </div>
+        <div class="column">
+          <div class="card card-bg card-3">
+            <p>{{availableSeats}} seats</p>
+            <h3>Total Available Seats Right Now</h3>
+          </div>
+        </div>
+        <div class="column">
+          <div class="card card-bg card-4">
+            <p>{{noShowsToday}} students</p>
+            <h3>No-shows Today</h3>
+          </div>
+        </div>
+      </div>
+
+      <section class="reservation-section">
+
+        <div class="reservations">
+          <h2>Active Reservations</h2>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Room</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody id="reservations-tbody">
+                {{#each reservations}}
+                <tr
+                  data-id="{{this._id}}"
+                  data-name="{{this.studentName}}"
+                  data-booking-id="{{this.studentId}}"
+                  data-building="{{this.buildingName}}"
+                  data-building-code="{{this.buildingCode}}"
+                  data-room="{{this.labCode}}"
+                  data-seat="{{this.seat}}"
+                  data-date="{{this.date}}"
+                  data-time="{{this.timeSlot}}"
+                  data-status="{{this.status}}">
+                  <td>{{this.studentName}}</td>
+                  <td>{{this.labCode}}</td>
+                  <td>{{this.date}}</td>
+                  <td>{{this.timeSlot}}</td>
+                  <td><span class="status-badge active">{{this.status}}</span></td>
+                  <td><button class="view-btn">View</button></td>
+                </tr>
+                {{else}}
+                <tr>
+                  <td colspan="6" style="text-align:center; color:#888;">No active reservations.</td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="laboratory-avail">
+          <div class="card lab-card">
+            <h3>Laboratory Availability</h3>
+            <form id="lab-form">
+              <label for="lab-building">1. Select Building</label>
+              <select id="lab-building" required>
+                <option value="" disabled selected>Choose a Building...</option>
+                {{#each buildings}}
+                <option value="{{this.buildingCode}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+
+              <label for="lab-room">2. Select Lab Room</label>
+              <select id="lab-room" required>
+                <option value="" disabled selected>Choose a Lab...</option>
+                {{#each labs}}
+                <option value="{{this.code}}" data-building="{{this.buildingCode}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+
+              <label for="lab-date">3. Select Date</label>
+              <input type="date" id="lab-date" required />
+
+              <label for="lab-time">4. Select Time</label>
+              <select id="lab-time" required>
+                <option value="09:00 - 09:30">09:00 AM - 09:30 AM</option>
+                <option value="09:30 - 10:00">09:30 AM - 10:00 AM</option>
+                <option value="10:00 - 10:30">10:00 AM - 10:30 AM</option>
+                <option value="10:30 - 11:00">10:30 AM - 11:00 AM</option>
+                <option value="11:00 - 11:30">11:00 AM - 11:30 AM</option>
+                <option value="11:30 - 12:00">11:30 AM - 12:00 PM</option>
+                <option value="13:00 - 13:30">01:00 PM - 01:30 PM</option>
+                <option value="13:30 - 14:00">01:30 PM - 02:00 PM</option>
+              </select>
+
+              <button type="submit">Check Availability</button>
+            </form>
+
+            <div class="lab-info" id="lab-info" style="display:none;">
+              <p><strong>Total Seats:</strong> <span id="total-seats">0</span></p>
+              <p><strong>Seats Occupied:</strong> <span id="occupied-seats">0</span></p>
+              <p><strong>Seats Remaining:</strong> <span id="remaining-seats">0</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="detail-modal" class="modal">
+        <div class="modal-content detail-modal-content">
+          <div class="detail-modal-header">
+            <h3 id="detail-modal-title">Reservation Details</h3>
+            <button id="detail-close" class="detail-close-btn" aria-label="Close">&times;</button>
+          </div>
+
+          <div id="detail-view">
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="detail-label">Name</span>
+                <span class="detail-value" id="d-name">—</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Student ID</span>
+                <span class="detail-value" id="d-id">—</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Building</span>
+                <span class="detail-value" id="d-building">—</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Room</span>
+                <span class="detail-value" id="d-room">—</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Seat</span>
+                <span class="detail-value" id="d-seat">—</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Date</span>
+                <span class="detail-value" id="d-date">—</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Time</span>
+                <span class="detail-value" id="d-time">—</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Status</span>
+                <span class="detail-value" id="d-status">—</span>
+              </div>
+            </div>
+            <div class="modal-buttons">
+              <button id="detail-cancel">Close</button>
+              <button id="detail-edit" class="edit-btn-modal">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <button id="detail-remove" class="remove-btn-modal">Remove</button>
+            </div>
+          </div>
+
+          <div id="detail-edit-form" style="display:none;">
+            <div class="edit-form-grid">
+              <div class="edit-form-item">
+                <label class="detail-label" for="e-building">Building</label>
+                <select id="e-building" class="edit-input">
+                  {{#each buildings}}
+                  <option value="{{this.buildingCode}}" data-name="{{this.name}}">{{this.name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+              <div class="edit-form-item">
+                <label class="detail-label" for="e-room">Room</label>
+                <select id="e-room" class="edit-input">
+                  {{#each labs}}
+                  <option value="{{this.code}}" data-building="{{this.buildingCode}}">{{this.name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+              <div class="edit-form-item">
+                <label class="detail-label" for="e-seat">Seat</label>
+                <input type="text" id="e-seat" class="edit-input" placeholder="e.g. A1" />
+              </div>
+              <div class="edit-form-item">
+                <label class="detail-label" for="e-date">Date</label>
+                <input type="date" id="e-date" class="edit-input" />
+              </div>
+              <div class="edit-form-item edit-form-item--full">
+                <label class="detail-label" for="e-time">Time</label>
+                <select id="e-time" class="edit-input">
+                  <option value="09:00 - 09:30">09:00 AM - 09:30 AM</option>
+                  <option value="09:30 - 10:00">09:30 AM - 10:00 AM</option>
+                  <option value="10:00 - 10:30">10:00 AM - 10:30 AM</option>
+                  <option value="10:30 - 11:00">10:30 AM - 11:00 AM</option>
+                  <option value="11:00 - 11:30">11:00 AM - 11:30 AM</option>
+                  <option value="11:30 - 12:00">11:30 AM - 12:00 PM</option>
+                  <option value="13:00 - 13:30">01:00 PM - 01:30 PM</option>
+                  <option value="13:30 - 14:00">01:30 PM - 02:00 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-buttons">
+              <button id="edit-cancel">Cancel</button>
+              <button id="edit-save" class="save-btn-modal">
+                <i class="fa-solid fa-floppy-disk"></i> Save Changes
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+          <h3>Remove Reservation</h3>
+          <p>Are you sure you want to remove this reservation?</p>
+          <div class="modal-buttons">
+            <button id="modal-cancel">Cancel</button>
+            <button id="modal-confirm">Remove</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  {{> scripts}}
+  <script src="/js/admin.js"></script>
+
+</body>
+</html>
