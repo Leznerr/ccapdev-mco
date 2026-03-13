@@ -33,9 +33,9 @@ router.get("/profile", (req, res) => {
 // ==========================================
 // ABIGAIL
 // ==========================================
-router.get("/admin-dashboard", (req, res) => {
-    res.render("admin-dashboard", { title: "Technician Dashboard - ArcherLabs", pageCss: "admin-dashboard.css"});
-});
+const adminController = require("../controllers/adminController");
+router.get("/admin-dashboard", adminController.getDashboard);
+
 
 module.exports = router;
 
