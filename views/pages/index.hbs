@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{>head}}
+</head>
+<body>
+    {{>topNavbar}}
+    {{>adminSidebar}}
+
+    <main class="home-wrapper">
+        <header class="hero-section">
+            <div class="hero-text">
+                <h1>Academic Success Starts with a Seat</h1>
+                <p>Reserve lab seats fast with a clear, guided booking flow.</p>
+            </div>
+            <div class="glass-card hero-cta-card">
+                <h2>Welcome to ArcherLabs</h2>
+                <p>Start your reservation in one click and lock your slot in minutes.</p>
+                <a href="view-lab.html" class="btn-primary-home cta-reserve-btn">Reserve a Seat Now</a>
+            </div>
+        </header>
+
+        <section class="glass-card info-section">
+            <div class="section-header">
+                <h2><i class="fas fa-route"></i> How It Works</h2>
+            </div>
+            <div class="steps-grid">
+                <article class="step-card">
+                    <div class="step-icon"><i class="fas fa-user-check"></i></div>
+                    <h3>Authenticate</h3>
+                    <p>Log in with your ArcherLabs account to access reservations.</p>
+                </article>
+                <article class="step-card">
+                    <div class="step-icon"><i class="fas fa-chair"></i></div>
+                    <h3>Select a Seat</h3>
+                    <p>Choose your lab, preferred time slots, and available workstation.</p>
+                </article>
+                <article class="step-card">
+                    <div class="step-icon"><i class="fas fa-circle-check"></i></div>
+                    <h3>Confirm</h3>
+                    <p>Finalize your booking and view your slots in your profile history.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="quick-nav-grid">
+            <div class="nav-item glass-card" onclick="window.location.href='view-lab.html'">
+                <div class="nav-icon"><i class="fas fa-map-location-dot"></i></div>
+                <h3>Interactive Map</h3>
+                <p>Browse laboratory layouts and select specific seat positions.</p>
+            </div>
+
+            <div class="nav-item glass-card" onclick="window.location.href='profile.html'">
+                <div class="nav-icon"><i class="fas fa-user-gear"></i></div>
+                <h3>My Profile</h3>
+                <p>Manage your account and review your active lab bookings.</p>
+            </div>
+        </section>
+
+        <section class="glass-card info-section">
+            <div class="section-header">
+                <h2><i class="fas fa-clipboard-list"></i> Guidelines</h2>
+            </div>
+            <div class="guidelines-grid">
+                <article class="guideline-card">
+                    <h3><i class="fas fa-clock"></i> Operating Hours</h3>
+                    <p>09:00 AM - 06:00 PM</p>
+                    <p>Lunch Break: 12:00 PM - 01:00 PM</p>
+                </article>
+                <article class="guideline-card">
+                    <h3><i class="fas fa-user-clock"></i> No-Show Policy</h3>
+                    <p>Reservations are cancelled if you are 10 minutes late.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    {{>scripts}}
+
+</body>
+</html>
