@@ -19,10 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 app.use(express.static(path.join(process.cwd(), "public")));
-app.use("/css", express.static(path.join(process.cwd(), "css")));
-app.use("/js", express.static(path.join(process.cwd(), "js")));
-app.use("/assets", express.static(path.join(process.cwd(), "assets")));
-app.use("/image", express.static(path.join(process.cwd(), "image")));
+app.use(express.static(path.join(process.cwd(), "public")));
 
 app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok", service: "ArcherLabs" });

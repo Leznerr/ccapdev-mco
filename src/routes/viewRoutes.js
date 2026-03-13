@@ -5,7 +5,7 @@ const router = express.Router();
 // BEA
 // ==========================================
 router.get("/", (req, res) => {
-    res.render("index", { title: "Home - ArcherLabs" });
+    res.render("index", { title: "Home - ArcherLabs", pageCss: "home.css" });
 });
 
 // ==========================================
