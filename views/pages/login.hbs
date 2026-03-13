@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{{>head}}
+</head>
+
+<body>
+	<div class="container">
+		<div class="left-container">
+			<div class="header-text">
+				<h1>Archer <br> <span class="accent">Labs</span></h1>
+				<span class="subtext">your go-to for computer lab <br>reservations</span>
+			</div>
+		</div>
+
+		<div class="right-container">
+			<div class="auth-form">
+				<h2>Get Started Now</h2>
+				<hr>
+				<form id="loginForm" method="post">
+					<div class="input-wrapper">
+						<i class="fa-solid fa-envelope"></i>
+						<input type="email" id="email" name="email" class="custom-input" placeholder="Email">
+					</div>
+					<div class="input-wrapper">
+						<i class="fa-solid fa-lock"></i>
+						<input type="password" id="password" name="password" class="custom-input" placeholder="Password">
+					</div>
+					<div class="remember-row">
+						<input type="checkbox" id="remember" name="remember">
+						<label for="remember">Remember Me</label>
+					</div>
+					<button type="submit" class="btn-primary">Login</button>
+				</form>
+				<hr>
+				<p>Don't have an account yet? <a href="/register">Register Here</a></p>
+			</div>
+		</div>
+	</div>
+
+	{{>scripts includeData=true pageScript="auth.js"}}
+</body>
+</html>
