@@ -166,23 +166,23 @@ function createUser(firstName, lastName, email, password, type) {
 // on success
 function redirectToDashboard(user) {
     if (!user) {
-        window.location.href = 'index.html';
+        window.location.href = '/';
         return;
     }
 
     if (user.role === 'Lab Technician') {
-        window.location.href = 'admin-dashboard.html';
+        window.location.href = '/admin-dashboard';
         return;
     }
 
     if (user.role === 'Student') {
-        window.location.href = 'index.html';
+        window.location.href = '/';
         return;
     }
 
-    window.location.href = 'index.html';
+    window.location.href = '/';
 }
 
 function redirectToLogin() {
-    window.location.href = 'login.html';
+    window.location.href = '/login';
 }
