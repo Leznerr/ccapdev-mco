@@ -1,0 +1,101 @@
+{{> head}}
+
+{{> topNavbar}}
+{{> adminSidebar}}
+
+<main class="main-content">
+    <section class="dashboard-split" id="overview">
+        <div class="overview-panel">
+            <div class="stat-grid">
+                <div class="card card-bg card-1">
+                    <p id="stat-total-reservations">--</p>
+                    <h3>Total Reservations Today</h3>
+                </div>
+
+                <div class="card card-bg card-2">
+                    <p id="stat-most-used-lab">--</p>
+                    <h3>Most Used Lab Today</h3>
+                </div>
+
+                <div class="card card-bg card-3">
+                    <p id="stat-available-seats">--</p>
+                    <h3>Total Available Seats Right Now</h3>
+                </div>
+
+                <div class="card card-bg card-4">
+                    <p id="stat-no-shows">--</p>
+                    <h3>No-shows Today</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="availability-panel" id="laboratories">
+            <div class="card lab-card">
+                <h3>Laboratory Availability</h3>
+                <form id="lab-form">
+                    <label for="lab-building">1. Select Building</label>
+                    <select id="lab-building" class="custom-select" required>
+                        <option value="" disabled selected>Choose a Building...</option>
+                    </select>
+
+                    <label for="lab-room">2. Select Lab Room</label>
+                    <select id="lab-room" class="custom-select" required>
+                        <option value="" disabled selected>Choose a Lab...</option>
+                    </select>
+
+                    <label for="lab-date">3. Select Date</label>
+                    <input type="date" id="lab-date" class="custom-input" required>
+
+                    <label for="lab-time">4. Select Time</label>
+                    <select id="lab-time" class="custom-select" required>
+                        <option value="" disabled selected>Choose a Time...</option>
+                    </select>
+
+                    <button type="submit" class="btn-primary">Check Availability</button>
+                </form>
+
+                <div class="lab-info" id="lab-info" style="display:none;">
+                    <p><strong>Total Seats:</strong> <span id="total-seats">--</span></p>
+                    <p><strong>Seats Occupied:</strong> <span id="occupied-seats">--</span></p>
+                    <p><strong>Seats Remaining:</strong> <span id="remaining-seats">--</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reservations" id="reservations">
+        <h2>Active Reservations</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Booking ID</th>
+                        <th>Building</th>
+                        <th>Room</th>
+                        <th>Seat</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reservations-tbody">
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div id="modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3>Remove Reservation</h3>
+            <p>Are you sure you want to remove this reservation?</p>
+            <div class="modal-buttons">
+                <button id="modal-cancel" class="btn-secondary">Cancel</button>
+                <button id="modal-confirm" class="btn-danger">Remove</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+{{> scripts}}

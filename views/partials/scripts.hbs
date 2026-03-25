@@ -1,0 +1,17 @@
+{{#if includeJquery}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{/if}}
+{{#if includeChartJs}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{/if}}
+{{#if includeData}}
+<script src="/js/data.js"></script>
+{{/if}}
+{{#if includeGlobalScript}}
+<script src="/js/script.js"></script>
+{{/if}}
+{{#if pageScript}}
+<script src="/js/{{pageScript}}"></script>
+{{/if}}
+</body>
+</html>
